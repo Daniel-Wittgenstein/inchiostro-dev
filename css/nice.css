@@ -1,0 +1,12 @@
+
+/* Not used by the app, just there for story author convenience. */
+
+.rounded {
+  border-radius: 50%;
+}
+
+.centered {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}

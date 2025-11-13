@@ -1,0 +1,16 @@
+
+.error {
+  border: 10px solid red;
+  padding: 16px;
+  font-weight: 20px;
+  background: white;
+}
+
+.error-original-text {
+  color: #555
+}
+
+.error-message {
+  font-weight: bold;
+  color: #000;
+}
