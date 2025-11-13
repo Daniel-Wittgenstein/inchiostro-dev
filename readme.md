@@ -1,4 +1,4 @@
 
 # Inchiostro Story Template
 
-A story template for Ink.
+A story template for Ink. Dev.
