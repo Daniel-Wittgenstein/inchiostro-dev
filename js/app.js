@@ -561,10 +561,25 @@
       `turns = int0+` //int0+ means the parameter must be an integer >= 0
     )
 
+
     commandManager.addCommand(
       "id_out",
       ["out"],
       `$singleWord`
+    )
+
+
+    commandManager.addCommand(
+      "id_muteApp",
+      ["muteApp"],
+      `$string`
+    )
+
+
+    commandManager.addCommand(
+      "id_unmuteApp",
+      ["unmuteApp"],
+      `$string`
     )
 
 
@@ -575,8 +590,13 @@
   function dispatchCommand(commandId, param, originalText) {
 
     // This is where the special commands actually do stuff:
+    if (commandId === "id_unmuteApp") {
+      unmuteApp()
 
-    if (commandId === "id_out") {
+    } else if (commandId === "id_muteApp") {
+      muteApp()
+
+    } else if (commandId === "id_out") {
       const elId = param.singleWord
       setCurrentOutputContainer(elId)
       return  {
