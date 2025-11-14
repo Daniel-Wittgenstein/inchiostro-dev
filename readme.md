@@ -23,7 +23,6 @@ This turns the folder into a valid Inkberry project. Then open the folder with t
 
 Bump the version number inside "template-package.json"
 
-(The "template-package.json" is necessary so that Inkberry accepts this as a story template when it is loaded locally via "Load a Story Template".)
+(The "template-package.json" is for documentation purposes, but also for Inkberry. It's necessary so that Inkberry accepts this as a story template when it is loaded locally via "Load a Story Template". Important: the files should all be in the root folder of the zip. Not in a nested folder, otherwise Inkberry will fail to load the template.)
 
 Then just manually zip up the folder contents (without the .gitignored files, of course) and release them.
-
