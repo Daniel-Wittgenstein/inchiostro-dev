@@ -34,7 +34,24 @@ var commandProcessor = (function() {
   }
 
   function createCommandValidatorFromSpecialTemplate(templateStr) {
-    if (templateStr === "$string") {
+    if (templateStr === "$none") {
+      return {
+        parameterless: true,
+        process(str) {
+          if (str.trim()) {
+            return err(`This command takes no parameters at all. `+
+              `Please just use the command name, with no text following it.`
+            )
+          }
+          return {
+            string: str
+          }
+        }        
+      }
+
+    }
+
+    else if (templateStr === "$string") {
       return {
         parameterless: true,
         process(str) {
