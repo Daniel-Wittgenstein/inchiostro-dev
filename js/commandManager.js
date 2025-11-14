@@ -46,7 +46,7 @@ var CommandManager = (function() {
         if (res.commandName) {
           msg = `Command "$${res.commandName}": ` + msg
         }
-        return `${msg} --- ${res.commandName}`
+        return `${str}<br><br>${msg}`
       }
       
       const {command, paramData} = res
