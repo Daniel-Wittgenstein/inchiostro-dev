@@ -13,6 +13,8 @@
   const settings = $_settings
   const random = $_random
 
+  const MAGICAL_CHOICE_CONTAINER_STRING = "no-conflict-choice-containerX073223218"
+
   const allowedDebugCommands = new Set(["commands"])
 
   let story, top, mid, bottom, commandManager, saveSlotManager,
@@ -320,6 +322,8 @@
   function serializeContainer(container) {
     const clone = container.cloneNode(true)
 
+    clone.querySelectorAll(`.${MAGICAL_CHOICE_CONTAINER_STRING}`).forEach(child => child.remove())
+
     clone.querySelectorAll('img[src^="data:"], video[src^="data:"], audio[src^="data:"]').
       forEach(el => {el.removeAttribute('src')
     })
@@ -452,13 +456,17 @@
       story.currentChoices, store.get("shuffleChoices")
     )
 
+    const choiceContainer = document.createElement("div")
+    choiceContainer.classList.add(MAGICAL_CHOICE_CONTAINER_STRING)
+    currentOutputContainer.appendChild(choiceContainer)
+
     choicesList.forEach((choice, index) => {
       const choiceParagraphElement = document.createElement('p')
       choiceParagraphElement.classList.add('choice-outer')
       choiceParagraphElement.innerHTML = 
         `<button class='choice' 
         data-ink-index='${index}'>${choice.text}</button>`
-      currentOutputContainer.appendChild(choiceParagraphElement)
+      choiceContainer.appendChild(choiceParagraphElement)
     })
   }
 
