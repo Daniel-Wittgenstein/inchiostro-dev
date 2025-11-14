@@ -21,4 +21,9 @@ This turns the folder into a valid Inkberry project. Then open the folder with t
 
 # Releasing a new version of Inchiostro
 
-Just manually zip up the folder contents (without the .gitignored files, of course) and release them.
+Bump the version number inside "template-package.json"
+
+(The "template-package.json" is necessary so that Inkberry accepts this as a story template when it is loaded locally via "Load a Story Template".)
+
+Then just manually zip up the folder contents (without the .gitignored files, of course) and release them.
+
