@@ -32,7 +32,7 @@
     $____testSaveState = getState()
   }
 
-  function startApp(assets) {
+  async function startApp(assets) {
 
     console.log("assets", assets)
 
@@ -90,11 +90,11 @@
 
     createCommands()
 
-    takeTurn()
+    refreshUndoIcon()
+
+    await continueStory()
 
     restartStoryInitialState = getState()
-
-    refreshUndoIcon()
 
   }
 
@@ -162,6 +162,7 @@
     const contId = store.get("out", "main")
     setCurrentOutputContainer(contId)
     restoreSeed()
+    continueStory()
   }
 
 
@@ -268,14 +269,14 @@
 
 
   function initHandlers() {
-    document.addEventListener('click', e => {
+    document.addEventListener('click', async (e) => {
       if (e.target.classList.contains('choice')) {
         const index = Number(e.target.dataset.inkIndex)
         if (!index && index !== 0) {
           console.log("Invalid choice. Do not give class 'choice' to random elements.")
           return
         }
-        selectChoice(index)
+        await selectChoice(index)
       }
     })
 
@@ -357,10 +358,11 @@
 
 
 
-  function selectChoice(index) {
+  async function selectChoice(index) {
     addUndoState()
     story.ChooseChoiceIndex(index)
-    takeTurn()
+    flushContainers()
+    await continueStory()
   }
 
 
@@ -388,12 +390,18 @@
   }
 
 
-  function takeTurn() {
+  async function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 
-    flushContainers()
+
+  async function continueStory() {
 
     while(story.canContinue) {
+      
       const paragraphText = story.Continue()
+
+      let wasSomethingOutput = false
 
       if (paragraphText.trim().startsWith("$")) {
         // text is special command:
@@ -425,10 +433,22 @@
           // to main, not to currentOutputContainer
         }
 
+        if (dispatchResult?.commandOutputs) {
+          wasSomethingOutput = true
+        }
+
       } else {
         const paragraphElement = document.createElement('p')
         paragraphElement.innerHTML = paragraphText
         currentOutputContainer.appendChild(paragraphElement)
+        wasSomethingOutput = true
+      }
+
+      if (wasSomethingOutput) {
+        const delay = store.get("pauseAfterOutputElement")
+        if (delay) {
+          await sleep(delay)
+        }
       }
 
     }
@@ -649,23 +669,42 @@
     // This is where the special commands actually do stuff:
 
     if (commandId === "id_seed") {
+      let debugText = ""
       if (param.string.trim() === "") {
         setSeed()
+        debugText = "RANDOM"
       } else {
-        setSeed(Number(param.string.trim()))
+        const seed = param.string.trim()
+        setSeed(Number(seed))
+        debugText = seed
+      }
+      return  {
+        debugMsg: `Set seed to ${debugText}`,
       }
 
     } else if (commandId === "id_shuffleChoicesOn") {
       store.set("shuffleChoices", true)
+      return  {
+        debugMsg: `Set shuffle choices to ON.`,
+      }
 
     } else if (commandId === "id_shuffleChoicesOff") {
       store.set("shuffleChoices", false)
+      return  {
+        debugMsg: `Set shuffle choices to OFF.`,
+      }
 
     } else if (commandId === "id_unmuteApp") {
       unmuteApp()
+      return  {
+        debugMsg: `Unmute app audio.`,
+      }
 
     } else if (commandId === "id_muteApp") {
       muteApp()
+      return  {
+        debugMsg: `Mute app audio.`,
+      }
 
     } else if (commandId === "id_out") {
       const elId = param.singleWord
