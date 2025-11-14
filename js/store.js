@@ -11,6 +11,7 @@ var $_store = (function() {
     seed: 0,
     randomized: true,
     elementPause: 100, // in milliseconds
+    choicePause: 100, // in milliseconds
   }
 
   return {

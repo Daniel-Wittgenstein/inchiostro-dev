@@ -409,9 +409,17 @@
 
   }
 
+  
   async function elementPause() {
     const delay = store.get("elementPause")
-    console.log("delay is", delay)
+    if (delay) {
+      await sleep(delay)
+    }
+  }
+
+
+  async function choicePause() {
+    const delay = store.get("choicePause")
     if (delay) {
       await sleep(delay)
     }
@@ -484,8 +492,10 @@
     choiceContainer.classList.add(MAGICAL_CHOICE_CONTAINER_STRING)
     currentOutputContainer.appendChild(choiceContainer)
 
-    choicesList.forEach(async (choice, index) => {
-      await sleep(500)
+    let index = -1
+    for (const choice of choicesList) {
+      index++
+      await choicePause()
       if (signal.aborted) return
       const choiceParagraphElement = document.createElement('p')
       choiceParagraphElement.classList.add('choice-outer')
@@ -493,7 +503,8 @@
         `<button class='choice' 
         data-ink-index='${index}'>${choice.text}</button>`
       choiceContainer.appendChild(choiceParagraphElement)
-    })
+    }
+
   }
 
   async function takeTurn(firstTime) {
@@ -726,6 +737,13 @@
       ["elementPause"],
       `pause = int0+`
     )
+    
+    
+    commandManager.addCommand(
+      "id_choicePause",
+      ["choicePause"],
+      `pause = int0+`
+    )
 
 
   }
@@ -736,7 +754,10 @@
 
     // This is where the special commands actually do stuff:
     
-    if (commandId === "id_elementPause") {
+    if (commandId === "id_choicePause") {
+      store.set("choicePause", param.pause)
+
+    } else if (commandId === "id_elementPause") {
       store.set("elementPause", param.pause)
 
     } else if (commandId === "id_seed") {
