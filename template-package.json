@@ -1,0 +1,9 @@
+{
+  "id": "inchiostro",
+  "name": "Inchiostro",
+  "version": "0.0.1",
+  "author": "Daniel Wittgenstein",
+  "license": "MIT",
+  "descr": "An Ink web template.",
+  "useSources": true
+}
