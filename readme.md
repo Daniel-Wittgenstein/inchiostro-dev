@@ -3,7 +3,7 @@
 
 This is the repo where Inchiostro is being developed.
 
-If you are looking for more generic info about Inchiostro, (click here)[https://daniel-wittgenstein.github.io/inchiostro-website/]
+If you are looking for more generic info about Inchiostro, [click here(https://daniel-wittgenstein.github.io/inchiostro-website/)
 
 # Developing Inchiostro
 
