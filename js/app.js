@@ -190,7 +190,6 @@
 
 
   function refreshUndoIcon() {
-    console.log("UDO", undoStack.length)
     const el = document.getElementById("undo-button")
     if (isUndoPossible()) {
       el.style.opacity = 1
