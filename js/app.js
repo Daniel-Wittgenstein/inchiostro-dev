@@ -395,8 +395,7 @@
   }
 
 
-  async function continueStory() {
-
+  async function continueInk() {
     while(story.canContinue) {
       
       const paragraphText = story.Continue()
@@ -452,7 +451,10 @@
       }
 
     }
+  }
 
+
+  async function createChoices() {
     const choicesList = getShuffledChoicesList(
       story.currentChoices, store.get("shuffleChoices")
     )
@@ -465,6 +467,14 @@
         data-ink-index='${index}'>${choice.text}</button>`
       currentOutputContainer.appendChild(choiceParagraphElement)
     })
+  }
+
+
+  async function continueStory() {
+
+    await continueInk()
+
+    await createChoices()
 
   }
 
