@@ -445,7 +445,7 @@
       }
 
       if (wasSomethingOutput) {
-        const delay = store.get("pauseAfterOutputElement")
+        const delay = store.get("elementPause")
         if (delay) {
           await sleep(delay)
         }
@@ -658,6 +658,13 @@
       ["seed"],
       `$string`
     )
+    
+    
+    commandManager.addCommand(
+      "id_elementPause",
+      ["elementPause"],
+      `pause = int0+`
+    )
 
 
   }
@@ -667,8 +674,11 @@
   function dispatchCommand(commandId, param, originalText) {
 
     // This is where the special commands actually do stuff:
+    
+    if (commandId === "id_elementPause") {
+      store.set("elementPause", param.pause)
 
-    if (commandId === "id_seed") {
+    } else if (commandId === "id_seed") {
       let debugText = ""
       if (param.string.trim() === "") {
         setSeed()
@@ -772,6 +782,8 @@
       currentOutputContainer.appendChild(clonedImage)
       return {
         debugMsg: `Display image "${assetName}"`,
+        commandOutputs: true, // We output an image, so we tell the engine
+          // that we did so. (So it can adjust pauses.)
       }
     }
 

@@ -10,7 +10,7 @@ var $_store = (function() {
     shuffleChoicesOn: false,
     seed: 0,
     randomized: true,
-    pauseAfterOutputElement: 100, // in milliseconds
+    elementPause: 100, // in milliseconds
   }
 
   return {
