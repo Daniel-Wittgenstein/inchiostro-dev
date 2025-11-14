@@ -6,7 +6,10 @@ var $_store = (function() {
       default: [],
     },
     maxUndo: 8,
-    out: "main", 
+    out: "main",
+    shuffleChoicesOn: false,
+    seed: 0,
+    randomized: true,
   }
 
   return {

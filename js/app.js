@@ -11,6 +11,7 @@
   const SaveSlotManager = window.$_SaveSlotManager
   const i18n = $_i18n
   const settings = $_settings
+  const random = $_random
 
   const allowedDebugCommands = new Set(["commands"])
 
@@ -160,6 +161,7 @@
     setDomState(state.domState)
     const contId = store.get("out", "main")
     setCurrentOutputContainer(contId)
+    restoreSeed()
   }
 
 
@@ -431,7 +433,11 @@
 
     }
 
-    story.currentChoices.forEach((choice, index) => {
+    const choicesList = getShuffledChoicesList(
+      story.currentChoices, store.get("shuffleChoices")
+    )
+
+    choicesList.forEach((choice, index) => {
       const choiceParagraphElement = document.createElement('p')
       choiceParagraphElement.classList.add('choice-outer')
       choiceParagraphElement.innerHTML = 
@@ -440,6 +446,14 @@
       currentOutputContainer.appendChild(choiceParagraphElement)
     })
 
+  }
+
+
+  function getShuffledChoicesList(choicesList, shuffle) {
+    if (!shuffle) {
+      return choicesList
+    }
+    return random.shuffle(choicesList)
   }
 
 
@@ -456,6 +470,28 @@
     }
     currentOutputContainer = el
     store.set("out", elId)
+  }
+
+
+  function setSeed(seed) {
+    if (seed === undefined) {
+      store.set("randomized", true)
+      store.set("seed", 0)
+      random.randomize()
+    } else {
+      store.set("randomized", false)
+      store.set("seed", seed)
+      random.seed(seed)
+    }
+  }
+
+
+  function restoreSeed() {
+    if (store.get("randomized")) {
+      setSeed()
+    } else {
+      setSeed(store.get("seed"))
+    }
   }
 
 
@@ -572,13 +608,34 @@
     commandManager.addCommand(
       "id_muteApp",
       ["muteApp"],
-      `$string`
+      `$none`
     )
 
 
     commandManager.addCommand(
       "id_unmuteApp",
       ["unmuteApp"],
+      `$none`
+    )
+
+
+    commandManager.addCommand(
+      "id_shuffleChoicesOn",
+      ["shuffleChoicesOn", "shuffleChoices"],
+      `$none`
+    )
+
+
+    commandManager.addCommand(
+      "id_shuffleChoicesOff",
+      ["shuffleChoicesOff"],
+      `$none`
+    )
+    
+    
+    commandManager.addCommand(
+      "id_seed",
+      ["seed"],
       `$string`
     )
 
@@ -590,7 +647,21 @@
   function dispatchCommand(commandId, param, originalText) {
 
     // This is where the special commands actually do stuff:
-    if (commandId === "id_unmuteApp") {
+
+    if (commandId === "id_seed") {
+      if (param.string.trim() === "") {
+        setSeed()
+      } else {
+        setSeed(Number(param.string.trim()))
+      }
+
+    } else if (commandId === "id_shuffleChoicesOn") {
+      store.set("shuffleChoices", true)
+
+    } else if (commandId === "id_shuffleChoicesOff") {
+      store.set("shuffleChoices", false)
+
+    } else if (commandId === "id_unmuteApp") {
       unmuteApp()
 
     } else if (commandId === "id_muteApp") {
