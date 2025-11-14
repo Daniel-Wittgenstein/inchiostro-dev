@@ -14,8 +14,10 @@ After you cloned the repo, add an "ink-package.json" to the root directory, with
   {
     "projectName": "Testing Inchiostro Dev",
     "entryFile": "story.js",
-    "inkFile": "story.ink"
+    "inkFile": "demos/test/test.ink"
   }
+
+(inkFile can be set to any Ink entry file, of course)
 
 This turns the folder into a valid Inkberry project. Then open the folder with the Inkberry app. Now you can implement new features and test them.
 
