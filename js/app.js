@@ -93,6 +93,8 @@
 
     restartStoryInitialState = getState()
 
+    refreshUndoIcon()
+
   }
 
 
