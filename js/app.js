@@ -18,11 +18,11 @@
   const allowedDebugCommands = new Set(["commands"])
 
   let story, top, mid, bottom, commandManager, saveSlotManager,
-    restartStoryInitialState, currentOutputContainer
-    
+    restartStoryInitialState, currentOutputContainer, assetMap,
+    currentSaveMarker, currentTurnAbortController
+  
   let undoStack = []
 
-  let assetMap
 
   async function startApp(assets) {
 
@@ -34,14 +34,16 @@
 
     saveSlotManager = new SaveSlotManager({
       onStateLoaded: async (state) => {
+        
+        // LOAD A STORY FROM SAVE SLOT:
+
         destroyUndoStack() // not a technical necessity, but
           // like with restart story, it's just weird
           //  when you undo too much
           // and end up in a previous playthrough.
-        setState(state)
-        await continueStory()
+        await restoreFromState(state)
       },
-      getStateToSave: () => getState(),
+      getStateToSave: () => currentSaveMarker,
       getSaveSlotText: () => {
         const str = story.variablesState["saveSlotText"]
         if (!(typeof str === "string")) {
@@ -85,9 +87,10 @@
 
     refreshUndoIcon()
 
-    await continueStory()
-
     restartStoryInitialState = getState()
+
+    // at app start: start story:
+    await takeTurn(true)
 
   }
 
@@ -124,8 +127,7 @@
     destroyUndoStack() // not a technical necessity, but it's just weird
     //  when you undo too much
     // and end up in a previous playthrough.
-    setState(restartStoryInitialState)
-    await continueStory()
+    await restoreFromState(restartStoryInitialState)
   }
 
 
@@ -145,12 +147,15 @@
   }
 
 
-  function setState(state) {
+  async function restoreFromState(state) {
     if (!state.$$_isAppState) throw new Error(`Passed invalid state object.`)
     const result = store.setStoreState(state.store)
     if (!result) {
       throw new Error(`Not a valid store state.`)
     }
+    abortCurrentTurn() // so pending awaits don't keep running, writing stuff
+      // to the DOM, executing commands etc.
+    flushContainers()
     story.state.LoadJson(state.story)
     ambientManager.stopAmbient(0)
     ambientManager.setState(state.ambientManager, assetMap)
@@ -159,6 +164,14 @@
     setCurrentOutputContainer(contId)
     refreshUndoIcon()
     restoreSeed()
+
+    // and finally:
+    takeTurn(false)
+  }
+
+
+  function abortCurrentTurn() {
+    
   }
 
 
@@ -219,8 +232,7 @@
       return
     }
     const state = undoStack.pop()
-    setState(state)
-    await continueStory()
+    await restoreFromState(state)
   }
 
 
@@ -356,10 +368,8 @@
 
 
   async function selectChoice(index) {
-    addUndoState()
     story.ChooseChoiceIndex(index)
-    flushContainers()
-    await continueStory()
+    await takeTurn(false)
   }
 
 
@@ -387,17 +397,36 @@
   }
 
 
+  function setSaveMarker() {
+    // Stores the current state into the save marker.
+
+    // When the player does save the game, the app does NOT actually
+    // save the current app state, but the state inside the state marker.
+
+    // This is so that intermediary DOM states do not get saved.
+
+    currentSaveMarker = getState()
+
+  }
+
+  async function elementPause() {
+    const delay = store.get("elementPause")
+    console.log("delay is", delay)
+    if (delay) {
+      await sleep(delay)
+    }
+  }
+
+
   async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
 
-  async function continueInk() {
+  async function continueInk(signal) {
     while(story.canContinue) {
       
       const paragraphText = story.Continue()
-
-      let wasSomethingOutput = false
 
       if (paragraphText.trim().startsWith("$")) {
         // text is special command:
@@ -407,9 +436,10 @@
           authorError(result)
         }
 
-        const dispatchResult = dispatchCommand(result.id, result.paramData,
+        const dispatchResult = await dispatchCommand(result.id, result.paramData,
           paragraphText
         )
+        if (signal.aborted) return
 
         if (store.get("debug_commands")) {
           const paragraphElement = document.createElement('p')
@@ -429,29 +459,23 @@
           // to main, not to currentOutputContainer
         }
 
-        if (dispatchResult?.commandOutputs) {
-          wasSomethingOutput = true
-        }
 
       } else {
+
+        await elementPause()
+        if (signal.aborted) return
+
         const paragraphElement = document.createElement('p')
         paragraphElement.innerHTML = paragraphText
         currentOutputContainer.appendChild(paragraphElement)
-        wasSomethingOutput = true
-      }
 
-      if (wasSomethingOutput) {
-        const delay = store.get("elementPause")
-        if (delay) {
-          await sleep(delay)
-        }
       }
 
     }
   }
 
 
-  async function createChoices() {
+  async function createChoices(signal) {
     const choicesList = getShuffledChoicesList(
       story.currentChoices, store.get("shuffleChoices")
     )
@@ -460,7 +484,9 @@
     choiceContainer.classList.add(MAGICAL_CHOICE_CONTAINER_STRING)
     currentOutputContainer.appendChild(choiceContainer)
 
-    choicesList.forEach((choice, index) => {
+    choicesList.forEach(async (choice, index) => {
+      await sleep(500)
+      if (signal.aborted) return
       const choiceParagraphElement = document.createElement('p')
       choiceParagraphElement.classList.add('choice-outer')
       choiceParagraphElement.innerHTML = 
@@ -470,12 +496,36 @@
     })
   }
 
+  async function takeTurn(firstTime) {
 
-  async function continueStory() {
+    // If there is already a turn running, abort it:
+    if (currentTurnAbortController) {
+      currentTurnAbortController.abort()
+    }
 
-    await continueInk()
+    // And create a new abort controller for this turn:
+    currentTurnAbortController = new AbortController()
 
-    await createChoices()
+    await actuallyTakeTurn(firstTime, currentTurnAbortController.signal)
+
+  }
+
+
+  async function actuallyTakeTurn(firstTime, signal) {
+
+    if (!firstTime) {
+      addUndoState()
+    }
+
+    setSaveMarker()
+
+    await continueInk(signal)
+    if (signal.aborted) return
+
+    await createChoices(signal)
+    if (signal.aborted) return
+
+    setSaveMarker()
 
   }
 
@@ -682,7 +732,7 @@
 
 
 
-  function dispatchCommand(commandId, param, originalText) {
+  async function dispatchCommand(commandId, param, originalText) {
 
     // This is where the special commands actually do stuff:
     
@@ -760,6 +810,8 @@
 
     else if (commandId === "id_image") { // here we check against the id we gave this command
 
+      await elementPause()
+
       const assetName = param.name
 
       const imageElement = assetMap[assetName]
@@ -792,9 +844,7 @@
 
       currentOutputContainer.appendChild(clonedImage)
       return {
-        debugMsg: `Display image "${assetName}"`,
-        commandOutputs: true, // We output an image, so we tell the engine
-          // that we did so. (So it can adjust pauses.)
+        debugMsg: `Display image "${assetName}"`
       }
     }
 
@@ -924,7 +974,7 @@
 
   window.inch = {
     getState,
-    setState,
+    restoreFromState,
     restartStory,
     undo: requestUndo,
     isUndoPossible,
