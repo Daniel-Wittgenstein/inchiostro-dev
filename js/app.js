@@ -22,16 +22,6 @@
 
   let assetMap
 
-  let $____testSaveState
-
-  window.$_testLoad = () => {
-    setState($____testSaveState)
-  }
-
-  window.$_testSave = () => {
-    $____testSaveState = getState()
-  }
-
   async function startApp(assets) {
 
     console.log("assets", assets)
@@ -41,12 +31,13 @@
     genericWindow.init()
 
     saveSlotManager = new SaveSlotManager({
-      onStateLoaded: (state) => {
+      onStateLoaded: async (state) => {
         destroyUndoStack() // not a technical necessity, but
           // like with restart story, it's just weird
           //  when you undo too much
           // and end up in a previous playthrough.
         setState(state)
+        await continueStory()
       },
       getStateToSave: () => getState(),
       getSaveSlotText: () => {
@@ -113,7 +104,9 @@
     genericWindow.newWindow(i18n.reallyRestart, [
       {
         text: i18n.reallyRestartConfirm,
-        onSelect: () => {restartStory()},
+        onSelect: async () => {
+          await restartStory()
+        },
       },
       {
         text: i18n.reallyRestartCancel,
@@ -125,11 +118,12 @@
   }
 
 
-  function restartStory() {
+  async function restartStory() {
     destroyUndoStack() // not a technical necessity, but it's just weird
     //  when you undo too much
     // and end up in a previous playthrough.
     setState(restartStoryInitialState)
+    await continueStory()
   }
 
 
@@ -161,8 +155,8 @@
     setDomState(state.domState)
     const contId = store.get("out", "main")
     setCurrentOutputContainer(contId)
+    refreshUndoIcon()
     restoreSeed()
-    continueStory()
   }
 
 
@@ -218,14 +212,13 @@
   }
 
 
-  function requestUndo() {
-    const state = undoStack.pop()
-    if(!state) {
-      return false
+  async function requestUndo() {
+    if (!isUndoPossible()) {
+      return
     }
+    const state = undoStack.pop()
     setState(state)
-    refreshUndoIcon()
-    return true
+    await continueStory()
   }
 
 
@@ -315,9 +308,9 @@
 
     document.getElementById("undo-button").title = i18n.undoButtonTitle
     document.getElementById("undo-button").addEventListener("click", 
-      (event) => {
+      async (event) => {
         //no blur here
-        requestUndo()
+        await requestUndo()
       }
     )
 

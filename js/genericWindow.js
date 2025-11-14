@@ -70,9 +70,9 @@ var $_genericWindow = (function() {
       let btn = document.createElement('button')
       btn.className = 'gwin-button'
       btn.textContent = button.text
-      btn.onclick = () => {
-        button.onSelect()
+      btn.onclick = async () => {
         closeThisWindow()
+        await button.onSelect()
       }
       buttonsContainer.appendChild(btn)
     })

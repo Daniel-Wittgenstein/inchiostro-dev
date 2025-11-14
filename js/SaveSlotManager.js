@@ -22,7 +22,7 @@ var $_SaveSlotManager = (function() {
 
 
     #initEventListeners() {
-      document.addEventListener("click", (event) => {
+      document.addEventListener("click", async (event) => {
         const clickedEl = event.target
 
         if (clickedEl.classList.contains(this.domPrefix + "-clear")) {
@@ -36,8 +36,8 @@ var $_SaveSlotManager = (function() {
         } else if (clickedEl.classList.contains(this.domPrefix + "-load")) {
         
           const index = Number(clickedEl.dataset.index)
-          this.#loadFromSlot(index)
           this.#closeSaveSlotDialog()
+          await this.#loadFromSlot(index)
 
 
 
@@ -69,10 +69,10 @@ var $_SaveSlotManager = (function() {
     }
 
 
-    #loadFromSlot(index) {
+    async #loadFromSlot(index) {
       const json = localStorage.getItem(this.localStorageSlotPrefix + index)
       const state = JSON.parse(json).appState
-      this.callbacks.onStateLoaded(state)
+      await this.callbacks.onStateLoaded(state)
     }
 
 
