@@ -66,7 +66,7 @@ var $_loadAssets = (onProgress = () => {}, assetMap, alternativeEntries) => {
     let src, type
 
     if (assetMap && assetMap[path]) {
-      log(`${path}: load from asset map`)
+      log(`${path}: preload from asset map`)
 
       const entry = assetMap[path]
       src = base64AssetHandling.base64ToDataUrl(entry)
@@ -74,7 +74,7 @@ var $_loadAssets = (onProgress = () => {}, assetMap, alternativeEntries) => {
 
     } else {
 
-      log(`${path}: load from path`)
+      log(`${path}: preload from path`)
 
       src = path
       if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext)) {
