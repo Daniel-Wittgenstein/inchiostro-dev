@@ -1,4 +1,14 @@
 
+
+VAR location = "Walking"
+VAR cloakText = "(no cloak)"
+VAR has_cloak = false
+
+// Enable custom save slot texts:
+VAR saveSlotText = ""
+~ saveSlotText = "&(location) &(cloakText)"
+
+
 $ muteApp
 
 <h1>CLOAK OF SILENCE</h1>
@@ -22,9 +32,11 @@ You are on your way to the opera.
 
 + Go back home.
 
-  You are already half-ill, so you decide to walk home.
+    ~ location = "At Home"
 
-  -> game_over
+    You are already half-ill, so you decide to walk home.
+
+    -> game_over
 
 
 
@@ -40,6 +52,8 @@ THE END
 
 $ ambient: example-game/rain.mp3
 
+~ location = "in front of the opera"
+    
 $ image: example-game/opera.jpg; alt = Dresden opera house.
 
 In front of the opera.
@@ -50,6 +64,8 @@ In front of the opera.
 
 
 === foyer
+
+~ location = "Foyer"
 
 $ ambient: example-game/inside.mp3
 
