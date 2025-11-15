@@ -9,6 +9,8 @@ var $_ambientManager = (function() {
   let currentAmbientId
   let currentAssetName = ""
 
+  let getHowlerObjByAssetPathName
+
 
   function startNewSound(newHowlerSound, fadeInTime = 1000) {
     console.log("start new sound", newHowlerSound)
@@ -68,7 +70,7 @@ var $_ambientManager = (function() {
   }
 
 
-  function setState(state, assetMap) {
+  function setState(state) {
     if (!state.$_isAmbientManagerState) {
       throw new error(`Not a valid ambient manager state.`)
     }
@@ -77,8 +79,13 @@ var $_ambientManager = (function() {
       // no ambient was playing, so we do not need to start one
       return
     }
-    const newHowlerSound = assetMap[assetPathPrefix + currentAssetName]
+    const newHowlerSound = getHowlerObjByAssetPathName(assetPathPrefix + currentAssetName)
     startNewSound(newHowlerSound, FADE_IN_TIME_AFTER_LOAD)
+  }
+
+
+  function setCallbacks(fnGetHowlerObjByAssetPathName) {
+    getHowlerObjByAssetPathName = fnGetHowlerObjByAssetPathName
   }
 
 
@@ -87,6 +94,7 @@ var $_ambientManager = (function() {
     stopAmbient,
     getState,
     setState,
+    setCallbacks,
   }
 
 })()

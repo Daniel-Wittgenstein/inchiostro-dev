@@ -29,7 +29,10 @@
   // ##################################################
   
   const loadAssets = window.$_loadAssets
+
   const ambientManager = window.$_ambientManager
+  ambientManager.setCallbacks(getAudioByPathName)
+
   const store = window.$_store
   const genericWindow = window.$_genericWindow
   const SaveSlotManager = window.$_SaveSlotManager
@@ -189,7 +192,7 @@
     flushContainers()
     story.state.LoadJson(state.story)
     ambientManager.stopAmbient(0)
-    ambientManager.setState(state.ambientManager, storyAssets)
+    ambientManager.setState(state.ambientManager)
     setDomState(state.domState)
     const contId = store.get("out", "main")
     setCurrentOutputContainer(contId)
@@ -668,7 +671,7 @@
         asset = document.createElement("img")
         asset.src = pathName
       } else if (type === "audio") {
-        const asset = new Howl({
+        asset = new Howl({
           src: [pathName],
         })
       } else {
