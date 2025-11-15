@@ -401,10 +401,13 @@
   function setSaveMarker() {
     // Stores the current state into the save marker.
 
-    // When the player does save the game, the app does NOT actually
+    // When the player saves the game, the app does NOT actually
     // save the current app state, but the state inside the state marker.
 
     // This is so that intermediary DOM states do not get saved.
+
+    // (Yes, we save the actual DOM state as HTML, not some abstract
+    // representation of it.)
 
     currentSaveMarker = getState()
 
@@ -523,7 +526,12 @@
       addUndoState()
     }
 
-    setSaveMarker()
+    setSaveMarker() // Remembers the state before the turn.
+      // If the player clicks "save" while the turn is still running,
+      // this is the position that will actually get saved, not some partially
+      // populated DOM state. This means that loading a save game
+      // will bump you back to the beginning of the last turn UNLESS
+      // the turn was entirely completed when you saved.
 
     await continueInk(signal)
     if (signal.aborted) return
@@ -531,7 +539,12 @@
     await createChoices(signal)
     if (signal.aborted) return
 
-    setSaveMarker()
+    setSaveMarker() // The turn is complete, so remember this state.
+      // If the player saves now, this will be the state that is saved.
+      // If you restore that state, the turn will not start from scratch
+      // and we will not run through the whole Ink content again.
+      // (Only through the choices.)
+
   }
 
 
