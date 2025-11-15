@@ -13,7 +13,7 @@ var $_ambientManager = (function() {
 
 
   function startNewSound(newHowlerSound, fadeInTime = 1000) {
-    console.log("start new sound", newHowlerSound)
+    //console.log("start new sound", newHowlerSound)
     currentAmbientId = newHowlerSound.play()
     currentAmbient = newHowlerSound
     newHowlerSound.loop(true, currentAmbientId)
@@ -31,7 +31,7 @@ var $_ambientManager = (function() {
     currentAssetName = assetName
 
     if (currentAmbient && currentAmbient.playing(currentAmbientId)) {
-      console.log("AMBIENT ALREADY PLAYING", currentAmbient, currentAmbientId)
+      //console.log("AMBIENT ALREADY PLAYING", currentAmbient, currentAmbientId)
       currentAmbient.fade(currentAmbient.volume(currentAmbientId), 
         0, fadeOutTime, currentAmbientId)
 
@@ -43,7 +43,7 @@ var $_ambientManager = (function() {
       }, fadeOutTime)
 
     } else {
-      console.log("NO AMBIENT YET")
+      //console.log("NO AMBIENT YET")
       startNewSound(newHowlerSound, fadeInTime)
     }
   }

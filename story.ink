@@ -16,7 +16,7 @@ You are on your way to the opera.
 
 + Keep walking.
 
-    -> walk
+    -> in_front
 
 + Go back home.
 
@@ -25,35 +25,42 @@ You are on your way to the opera.
   -> game_over
 
 
+
 === game_over
 
 THE END
 
 -> DONE
 
-=== walk
 
-$ image: example-game/park.jpg; alt = A rainy night.;
 
-Walking through the park.
+=== in_front
 
-You like the rain, you like the darkness.
+$ ambient: example-game/rain.mp3
 
-+ Keep walking.
+$ image: example-game/opera.jpg; alt = Dresden opera house.
 
-    Yeah, let's keep going.
+In front of the opera.
 
-+ Linger a bit.
++ Enter
+    -> foyer
 
-    You've always liked the darkness.
-    
-    The sound of the rain.
-    
-    But you are getting wet.
-    
-    ++ Better keep walking.
 
--
+
+=== foyer
+
+$ ambient: example-game/inside.mp3
+
+$ image: example-game/bar.jpg
+
+You are in the foyer of the opera house.
+
++ Go out
+    -> in_front
+
+
+
+
 
 -> DONE
 
