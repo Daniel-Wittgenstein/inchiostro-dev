@@ -310,7 +310,7 @@ Caveat 2: Inchiostro cannot save event handlers that are attached to DOM element
 
 ## Assets Preloading
 
-Inchiostro can preload your assets before the game starts. It will show a loading screen while doing so. This can help avoid in-game stutters caused by network delays. (But the game starts slower and uses more memory.)
+Inchiostro can preload your assets before the game starts. It will show a loading screen while doing so. This can help avoid in-game stutters caused by network delays. (But it comes with a trade-off: the game starts slower and uses more memory.)
 
 There are two ways to do this: with an asset map or with an asset definitions file.
 
@@ -344,13 +344,21 @@ The advantage of this is that your game will preload assets without increasing t
 
 **Note**: the asset map takes precedence over the asset definition file, so if you want to use the asset definition file, delete your asset map.
 
+## Using neither an Asset Map nor Asset Definitions
+
 You can also use no asset map at all and leave the asset definitions empty, like this:
 
     var $_assetDefinitions = `
 
     `
 
-In that case, the assets will not be preloaded at all. This makes for a game that starts faster.
+In that case, the assets will not be preloaded at all. This makes for a game that starts faster. You may experience some unwanted pauses when the app is downloading a big asset before displaying/using it.
+
+## Partial Asset Definitions
+
+You can add some assets to the asset definition file and leave some out. This way you can preload some assets, but not all of them.
+
+
 
 # Common Issues
 
