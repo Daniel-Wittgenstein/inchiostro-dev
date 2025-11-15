@@ -224,7 +224,6 @@
     el.classList.add("muted")
     settings.set("muted", true)
     Howler.mute(true)
-    console.log("muted")
   }
 
 
@@ -233,7 +232,6 @@
     el.classList.remove("muted")
     settings.set("muted", false)
     Howler.mute(false)
-    console.log("unmuted")
   }
 
 
