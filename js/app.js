@@ -363,6 +363,28 @@
       }
     )
 
+
+
+    document.getElementById("hamburger-button").title = i18n.hamburgerButtonTitle
+
+    document.getElementById("hamburger-button").addEventListener("click", 
+      (event) => {
+        //no blur here
+        openHamburgerMenu()
+      }
+    )
+
+
+  }
+
+
+  function openHamburgerMenu() {
+
+  }
+
+
+  function closeHamburgerMenu() {
+
   }
 
 
