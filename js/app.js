@@ -369,6 +369,7 @@
 
   async function selectChoice(index) {
     story.ChooseChoiceIndex(index)
+    flushContainers()
     await takeTurn(false)
   }
 
@@ -514,15 +515,9 @@
       currentTurnAbortController.abort()
     }
 
-    // And create a new abort controller for this turn:
+    // Create a new abort controller for this turn:
     currentTurnAbortController = new AbortController()
-
-    await actuallyTakeTurn(firstTime, currentTurnAbortController.signal)
-
-  }
-
-
-  async function actuallyTakeTurn(firstTime, signal) {
+    const signal = currentTurnAbortController.signal
 
     if (!firstTime) {
       addUndoState()
@@ -537,8 +532,10 @@
     if (signal.aborted) return
 
     setSaveMarker()
-
   }
+
+
+
 
 
   function getShuffledChoicesList(choicesList, shuffle) {
