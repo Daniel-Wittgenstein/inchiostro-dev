@@ -2,9 +2,6 @@
 var $_store = (function() {
   var state = {
     assetPath: "",
-    imageTypes: {
-      default: [],
-    },
     maxUndo: 8,
     out: "main",
     shuffleChoicesOn: false,
@@ -15,14 +12,6 @@ var $_store = (function() {
   }
 
   return {
-
-    setImageType: (imageType, cssClasses) => {
-      state.imageTypes[imageType] = cssClasses
-    },
-
-    getCssClassesbyImageType: (imageType) => {
-      return state.imageTypes[imageType]
-    },
 
     set: (key, value) => {
       state[key] = value

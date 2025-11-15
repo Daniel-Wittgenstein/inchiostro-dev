@@ -1,5 +1,15 @@
 
 #bottom {
+  /* The bottom container is built-in, but is meant to house
+  custom content: */
   padding-left: 8px;
   border-top: 1px solid #ccc;
 }
+
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+

@@ -732,8 +732,7 @@
         name = string ;
         class = string? ;
         style = string? ;
-        alt = string? ;
-        type = string? 
+        alt = string?
       `
     )
 
@@ -743,12 +742,6 @@
       ["debug"],
       `$wordList` // no parameter list, instead this command 
                     // will accept a list of single words
-    )
-
-    commandManager.addCommand(
-      "id_imageType",
-      ["imageType", "imgType"],
-      `$wordList`
     )
 
 
@@ -959,17 +952,6 @@
       clonedImage.className = (param.class  || "").replaceAll(",", " ")
       clonedImage.dataset.inchAssetName = assetName
 
-      const cssClasses = store.getCssClassesbyImageType(param.type || "default")
-      if (!cssClasses) {
-        authorError(`Image type "${param.type}": this type was never defined.`,
-          originalText
-        )
-        return
-      }
-      for (const cssClass of cssClasses) {
-        if (cssClass) clonedImage.classList.add(cssClass)
-      }
-
       currentOutputContainer.appendChild(clonedImage)
       return {
         debugMsg: `Display image "${assetName}"`
@@ -996,14 +978,6 @@
         store.set("debug_" + word, true)
       }
       return
-    }
-
-    else if (commandId === "id_imageType") {
-      store.setImageType(param.wordList[0], param.wordList.slice(1))
-      return {
-        debugMsg: `Create image type with name "${param.wordList[0]}" and `+
-          `classes "${param.wordList.slice(1)}"`,
-      }
     }
 
     else if (commandId === "id_play") {
