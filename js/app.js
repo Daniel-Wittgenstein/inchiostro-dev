@@ -1,11 +1,31 @@
 
 ;(function(storyContent) {
 
-  const pathPrefix = "assets/"
+  // ##################################################
+  // ##################################################
+  // Stuff you can (hopefully) change without worrying:
+  // ##################################################
+  // ##################################################
+  
+  const ALLOW_UNDEFINED_IMAGE = true // If an asset map or
+    // an asset definition exists and this is false,
+    // a helpful error message will be shown when the image
+    // does not exist. If an asset map or an asset
+    // definition exists and this is true, Inchiostro
+    // will try to load the image even though it does not exist
+    // in the asset map / the asset definitions.
 
   const AMBIENT_FADE_IN_TIME = 800 // milliseconds
   const AMBIENT_FADE_OUT_TIME = 800 // milliseconds
 
+
+  // ##################################################
+  // ##################################################
+  // ##################################################
+  // ##################################################
+  // ##################################################
+  // ##################################################
+  
   const loadAssets = window.$_loadAssets
   const ambientManager = window.$_ambientManager
   const store = window.$_store
@@ -16,6 +36,8 @@
   const random = $_random
 
   const MAGICAL_CHOICE_CONTAINER_STRING = "no-conflict-choice-containerX073223218"
+
+  const pathPrefix = "assets/"
 
   const allowedDebugCommands = new Set(["commands"])
 
@@ -618,6 +640,12 @@
     }
   }
 
+
+  function getImageByPathName(path, originalText = "") {
+    const allowUndefinedAssets = ALLOW_UNDEFINED_IMAGE
+    return getAssetByPathName(path, "image", originalText, allowUndefinedAssets)
+  }
+
   function getAssetByPathName(pathName, contextMsg = "", originalText = "",
     allowUndefinedAssets = false
   ) {
@@ -896,8 +924,7 @@
 
       const assetName = param.name
 
-      const imageElement = getAssetByPathName(pathPrefix + assetName,
-        "image", originalText, allowUndefinedAssets)
+      const imageElement = getImageByPathName(pathPrefix + assetName, originalText)
       
       if (!imageElement) {
         return
