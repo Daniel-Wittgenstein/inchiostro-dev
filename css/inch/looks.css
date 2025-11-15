@@ -3,8 +3,3 @@
   background: var(--light-bg);
   color: var(--light-fg);
 }
-
-#bottom {
-  padding-left: 8px;
-  border-top: 1px solid #ccc;
-}
