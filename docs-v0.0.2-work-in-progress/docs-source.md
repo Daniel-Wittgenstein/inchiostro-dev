@@ -316,7 +316,9 @@ There are two ways to do this: with an asset map or with an asset definitions fi
 
 ## Building an Asset Map
 
-If you are using Inkberry, in the top bar click "Build" -> "Build Asset Map". This will create a single file called "xAssetMapAuto.js" in your project folder. The file contains all of your game assets (base-64 encoded). You can distribute your game with this file INSTEAD OF your assets folder.
+If you are using Inkberry, in the top bar click "Build" -> "Build Asset Map". This will create a single file called "xAssetMapAuto.js" in your project folder. The file contains all of your game assets (base-64 encoded). That's it!
+
+You can now distribute your game with this file INSTEAD OF your assets folder.
 
 The disadvantage is that the "xAssetMapAuto.js" file will be a bit bigger than your assets are by themselves.
 
@@ -338,7 +340,7 @@ Open "./author/assetDefinitions.js" in any text editor. Then add the names of yo
 
     `
 
-The advantage of this is that your game will preload assets without increasing their size (unlike the asset map). The asset map works better for locally played games, though. 
+The advantage of this is that your game will preload assets without increasing their size (unlike the asset map). The asset map works better for locally playing games, though. 
 
 **Note**: the asset map takes precedence over the asset definition file, so if you want to use the asset definition file, delete your asset map.
 
@@ -348,7 +350,7 @@ You can also use no asset map at all and leave the asset definitions empty, like
 
     `
 
-In that case, the assets will not be preloaded at all. This makes for a faster starting game.
+In that case, the assets will not be preloaded at all. This makes for a game that starts faster.
 
 # Common Issues
 
