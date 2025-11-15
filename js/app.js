@@ -368,8 +368,8 @@
 
 
   async function selectChoice(index) {
-    story.ChooseChoiceIndex(index)
     addUndoState()
+    story.ChooseChoiceIndex(index)
     flushContainers()
     await takeTurn(false)
   }
