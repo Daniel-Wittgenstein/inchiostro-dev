@@ -129,7 +129,6 @@ The space after the $ symbol is optional. The colon is optional, too. So, you ca
 
     $popup Welcome to Inchiostro!
 
-
 # Images and Audio
 
 Inchiostro expects all your game assets (images and audio) to go into the "./assets" sub-directory of your project folder.
@@ -210,6 +209,7 @@ And you can do it abruptly:
 
     $ stopAmbient: abrupt = yes
 
+(If you prefer, you can also write "stop_ambient" or even "stop-ambient". This is true for all special commands consisting of multiple words. Just remember that commands are case-sensitive, so you cannot, for example, use "StopAmbIenT".)
 
 # Other Commands
 
