@@ -1,5 +1,5 @@
 
-const pathPrefix = "assets/"
+const pathPrefix = window.$_ASSET_PATH_PREFIX
 
 var $_loadAssets = (onProgress = () => {}, assetMap, alternativeEntries) => {
 

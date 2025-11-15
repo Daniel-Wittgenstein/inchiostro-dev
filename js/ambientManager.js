@@ -1,6 +1,8 @@
 
 const FADE_IN_TIME_AFTER_LOAD = 500
 
+const assetPathPrefix = window.$_ASSET_PATH_PREFIX
+
 var $_ambientManager = (function() {
 
   let currentAmbient
@@ -75,7 +77,7 @@ var $_ambientManager = (function() {
       // no ambient was playing, so we do not need to start one
       return
     }
-    const newHowlerSound = assetMap[currentAssetName]
+    const newHowlerSound = assetMap[assetPathPrefix + currentAssetName]
     startNewSound(newHowlerSound, FADE_IN_TIME_AFTER_LOAD)
   }
 

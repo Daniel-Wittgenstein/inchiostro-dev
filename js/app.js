@@ -39,7 +39,7 @@
 
   const MAGICAL_CHOICE_CONTAINER_STRING = "no-conflict-choice-containerX073223218"
 
-  const pathPrefix = "assets/"
+  const pathPrefix = window.$_ASSET_PATH_PREFIX
 
   const allowedDebugCommands = new Set(["commands"])
 
