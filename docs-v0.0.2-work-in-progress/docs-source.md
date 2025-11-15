@@ -257,6 +257,46 @@ Runs a single JS code line (via "eval"):
 
 
 
+## shuffleChoices
+
+STILL BROKEN. DO NOT USE.
+
+Start shuffling choices randomly.
+
+This uses the app's JavaScript random number generator, not Ink's random number generator.
+
+  $ shuffleChoices
+
+
+## shuffleChoicesOff
+
+Stop shuffling choices randomly.
+
+  $ shuffleChoicesoff
+
+
+## seed number
+
+Sets the seed of the app's JavaScript random number generator, making random numbers predictable.
+
+  $ seed 888
+
+(Has no effect on Ink's random number generator.)
+
+
+## seed
+
+Use seed with no parameter to set the app's JavaScript random number generator back to random, making random numbers unpredictable.
+
+  $ seed
+
+(Has no effect on Ink's random number generator.)
+
+
+
+
+
+
 # Commands for Debugging
 
 ## Debug Commands
