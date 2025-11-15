@@ -369,6 +369,7 @@
 
   async function selectChoice(index) {
     story.ChooseChoiceIndex(index)
+    addUndoState()
     flushContainers()
     await takeTurn(false)
   }
@@ -522,9 +523,11 @@
     currentTurnAbortController = new AbortController()
     const signal = currentTurnAbortController.signal
 
-    if (!firstTime) {
-      addUndoState()
-    }
+    let processTestId = new Date() // Only used by traceFlow.
+    const traceFlow = false // Set to true to console.log the async
+                            // flow. (Not that it's particularly complex.)
+
+    traceFlow && console.log("start turn process", processTestId)
 
     setSaveMarker() // Remembers the state before the turn.
       // If the player clicks "save" while the turn is still running,
@@ -533,17 +536,29 @@
       // will bump you back to the beginning of the last turn UNLESS
       // the turn was entirely completed when you saved.
 
+    traceFlow && console.log("process awaiting ink content", processTestId)
+
     await continueInk(signal)
-    if (signal.aborted) return
+    if (signal.aborted) {
+      traceFlow && console.log("process", processTestId, "aborted")
+      return //very important
+    }
+
+    traceFlow && console.log("process awaiting choices", processTestId)
 
     await createChoices(signal)
-    if (signal.aborted) return
+    if (signal.aborted) {
+      traceFlow && console.log("process", processTestId, "aborted")
+      return //very important
+    }
 
     setSaveMarker() // The turn is complete, so remember this state.
       // If the player saves now, this will be the state that is saved.
       // If you restore that state, the turn will not start from scratch
       // and we will not run through the whole Ink content again.
       // (Only through the choices.)
+
+    traceFlow && console.log("process complete", processTestId)
 
   }
 
