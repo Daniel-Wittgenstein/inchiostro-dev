@@ -22,12 +22,18 @@
   let story, top, mid, bottom, commandManager, saveSlotManager,
     restartStoryInitialState, currentOutputContainer, storyAssets,
     currentSaveMarker, currentTurnAbortController, allAssetFileNamesForErrorDisplay,
-    xAssetMapExistsForErrorDisplay
+    xAssetMapExistsForErrorDisplay, assetsWerePreloaded
   
   let undoStack = []
 
 
   async function startApp(assets) {
+    
+    assetsWerePreloaded = !!assets
+
+    storyAssets = assets || {}
+
+    document.getElementById("splash-screen").style.display = "none"
 
     console.log("assets", assets)
 
@@ -64,8 +70,6 @@
         emptySlot: i18n.saveSlotEmpty,
       }
     })
-
-    storyAssets = assets
 
     story = new inkjs.Story(storyContent)
 
@@ -615,6 +619,13 @@
   }
 
   function getAssetByPathName(pathName, contextMsg = "", originalText = "") {
+
+    if (!assetsWerePreloaded) {
+      const img = document.createElement("img")
+      img.src = pathName
+      return img
+    }
+
     let val = storyAssets[pathName]
     if (val) return val
 
@@ -999,7 +1010,11 @@
 
   async function startLoading() {
 
-    const assetText = window.$_assetDefinitions || null
+    let assetText = window.$_assetDefinitions || null
+
+    if (assetText) {
+      assetText = assetText.trim()
+    }
 
     let xAssetMap = window._$_xAssetMap || null
 
@@ -1025,6 +1040,7 @@
     if (!assetText && !xAssetMap) {
       console.log("No asset map and no asset definitions found. " +
         "Assets won't be preloaded.")
+      startApp(null)
       return
     }
 
@@ -1046,8 +1062,6 @@
       )
     }
     console.log("All assets loaded!")
-
-    document.getElementById("splash-screen").style.display = "none"
 
     startApp(assets)
   }

@@ -12,18 +12,7 @@ var $_loadAssets = (onProgress = () => {}, assetMap, alternativeEntries) => {
 
   const base64AssetHandling = $_base64AssetHandling
 
-  let filesToLoad
-
-  if (assetMap) {
-    filesToLoad = Object.keys(assetMap)
-  
-  } else if (assetListText) {
-    filesToLoad = alternativeEntries
-
-  } else {
-    throw new Error(`Dev mistake.`)
-
-  }
+  const filesToLoad = assetMap ? Object.keys(assetMap) : alternativeEntries
 
   const assets = {}
   const promises = []
