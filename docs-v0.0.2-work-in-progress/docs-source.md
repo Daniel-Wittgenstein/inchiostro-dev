@@ -272,6 +272,25 @@ Use the "hideChoiceText" command to suppress these texts:
 Negate "hideChoiceText" and show these texts again.
 
 
+## elementPause
+
+Sets the element pause in milliseconds. (The time the app waits before each image and text.)
+
+Wait 0.4 seconds before each image and text:
+
+    $ elementPause 400
+
+(Note that animations like fading text are set via CSS, not via commands. Look at "./css/author/style.css".)
+
+
+## choicePause
+
+Sets the choice pause in milliseconds. (The time the app waits before each choice.)
+
+    $ choicePause 800
+
+
+
 ## shuffleChoices
 
 STILL BROKEN. DO NOT USE.
