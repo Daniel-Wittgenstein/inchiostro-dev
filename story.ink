@@ -1,6 +1,11 @@
 $ muteApp
 
 
+<h1>CLOAK OF SILENCE</h1>
+
+<h2>An Inchiostro Demo Game</h2>
+
+
 VAR location = "Walking"
 VAR cloakText = "(no cloak)"
 VAR has_cloak = false
@@ -10,14 +15,12 @@ VAR saveSlotText = ""
 ~ saveSlotText = "&(location) &(cloakText)"
 
 
-
 // After selecting a choice, do not print its choice text again:
 $ hideChoiceText
 
+$ elementPause 400 // pause a bit before images and text
+$ choicePause 400 // and before choices
 
-<h1>CLOAK OF SILENCE</h1>
-
-<h2>An Inchiostro Demo Game</h2>
 
 + START
 -
