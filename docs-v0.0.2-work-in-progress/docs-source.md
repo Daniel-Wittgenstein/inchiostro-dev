@@ -102,7 +102,7 @@ A new Inchiostro project contains a whole bunch of files, so here's a short over
 
 ## Where You Change the Appearance of Your Game
 
-**css/author/style.css** directory: Contains some unimportant CSS. You can change this at will and add new stuff.
+**css/author/style.css** directory: Contains some not so important CSS. You can change this at will and add new stuff.
 
 ## Other Stuff
 
