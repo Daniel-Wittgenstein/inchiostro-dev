@@ -647,25 +647,34 @@
 
 
   function getImageByPathName(path, ctx, originalText = "") {
-    return getAssetByPathName(path, ctx, originalText, ALLOW_UNDEFINED_IMAGE)
+    return getAssetByPathName(path, ctx, originalText, ALLOW_UNDEFINED_IMAGE, "image")
   }
 
 
   function getAudioByPathName(path, ctx, originalText = "") {
-    return getAssetByPathName(path, ctx, originalText, ALLOW_UNDEFINED_AUDIO)
+    return getAssetByPathName(path, ctx, originalText, ALLOW_UNDEFINED_AUDIO, "audio")
   }
 
 
   function getAssetByPathName(pathName, contextMsg = "", originalText = "",
-    allowUndefinedAssets = false
+    allowUndefinedAssets = false, type
   ) {
 
     if (!assetsWerePreloaded || (
       allowUndefinedAssets && !storyAssets[pathName]
     )) {
-      const img = document.createElement("img")
-      img.src = pathName
-      return img
+      let asset
+      if (type === "image") {
+        asset = document.createElement("img")
+        asset.src = pathName
+      } else if (type === "audio") {
+        const asset = new Howl({
+          src: [pathName],
+        })
+      } else {
+        throw new Error("Unsupported type.")
+      }
+      return asset
     }
 
     let val = storyAssets[pathName]
@@ -997,8 +1006,9 @@
     else if (commandId === "id_play") {
       const volume = (param.volume === undefined) ? 1 : param.volume
       const path = param.name
-      const howlerSound = getAudioByPathName(path, "play", "")
+      const howlerSound = getAudioByPathName(pathPrefix + path, "play", "")
       if (!howlerSound) return
+      console.log(howlerSound)
       howlerSound.volume(volume)
       howlerSound.play()
       return {
@@ -1008,7 +1018,7 @@
 
     else if (commandId === "id_ambient") {
       const path = param.name
-      const howlerSound = getAudioByPathName(path, "play", "")
+      const howlerSound = getAudioByPathName(pathPrefix + path, "play", "")
       if (!howlerSound) return
       let fadeIn = AMBIENT_FADE_IN_TIME
       let fadeOut = AMBIENT_FADE_OUT_TIME
