@@ -78,8 +78,8 @@ var $_SaveSlotManager = (function() {
 
     #clearSlot(index) {
       localStorage.removeItem(this.localStorageSlotPrefix + index)
-
       this.slotMetaData[index] = undefined
+      this.#refreshMetaData()
     }
 
 
@@ -94,6 +94,11 @@ var $_SaveSlotManager = (function() {
         name,
       }
 
+      this.#refreshMetaData()
+    }
+
+
+    #refreshMetaData() {
       const metaJson = JSON.stringify(this.slotMetaData)
       localStorage.setItem(this.localStorageSlotPrefix + "-meta", metaJson)
     }
