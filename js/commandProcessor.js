@@ -1,6 +1,8 @@
 
 var commandProcessor = (function() {
 
+  const MAGIC_AUTO_FIRST_PROP_NAME = "_first"
+
   const utils = window.utils
 
   const paramTypes = {
@@ -179,18 +181,31 @@ var commandProcessor = (function() {
 
 
   function validateAndSanitizeParameters(paramData, commandValidator) {
+    let i = -1
     for (const paramValidator of commandValidator) {
+      i++
       const prop = paramValidator.prop
-      const val = paramData[prop]
+      let val = paramData[prop]
+
+      if (i === 0 && val === undefined) {
+        // The first parameter was not passed by name,
+        // but that's fine (only the first parameter can do this):
+        val = paramData[MAGIC_AUTO_FIRST_PROP_NAME]
+        delete paramData[MAGIC_AUTO_FIRST_PROP_NAME]
+        paramData[prop] = val
+      }
+
       if (val === undefined) {
         if (paramValidator.mandatory) {
           return err(`The mandatory property "${prop}" is missing.`)
         }
         continue
       }
+
       if (!paramValidator.check(val)) {
         return err(`${prop} = ${val}: ` + paramValidator.failText)
       }
+
       if (paramValidator.convert) {
         paramData[prop] = paramValidator.convert(paramData[prop])
       }
@@ -198,6 +213,7 @@ var commandProcessor = (function() {
 
     const validProps = new Set(commandValidator.map(entry => entry.prop))
     const invalidProp = Object.keys(paramData).find(key => !validProps.has(key)) || null
+    
     if (invalidProp) {
       const validPropsText = commandValidator.map(entry => `"${entry.prop}"`).join(", ")
       return err(`${invalidProp}: is not a valid property for this command. ` +
@@ -212,7 +228,9 @@ var commandProcessor = (function() {
   function parseParameters(str) {    
     const paramData = {}
     const parts = str.trim().split(";").map(n => n.trim()).filter(Boolean)
+    let i = -1
     for (const part of parts) {
+      i++
       if (part.includes("=")) {
         const subParts = part.split("=").map(n => n.trim())
         if (subParts.length > 2) {
@@ -225,6 +243,17 @@ var commandProcessor = (function() {
         }
         paramData[prop] = val
       } else {
+
+        if (i === 0) {
+          // parameter does not include "=" and is also the first parameter,
+          // treat it specially:
+          paramData[MAGIC_AUTO_FIRST_PROP_NAME] = part.trim()
+          continue
+        }
+
+        // if it's not the first parameter and does not include "=",
+        // then treat it as a truthy flag:
+
         if (/\s/.test(str)) {
           return err(`${part}: Expected either "property = value" or a single word property.`)
         }
@@ -250,6 +279,7 @@ var commandProcessor = (function() {
       const res = parseParameters(str)
       if (res.error) return res
       const paramData = res
+      //xyzzy
       return validateAndSanitizeParameters(paramData, commandValidator)
     }
   }
