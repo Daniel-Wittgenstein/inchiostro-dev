@@ -9,6 +9,7 @@ var $_store = (function() {
     randomized: true,
     elementPause: 100, // in milliseconds
     choicePause: 100, // in milliseconds
+    showChoiceText: true,
   }
 
   return {

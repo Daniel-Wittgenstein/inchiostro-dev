@@ -1,3 +1,4 @@
+$ muteApp
 
 
 VAR location = "Walking"
@@ -9,7 +10,10 @@ VAR saveSlotText = ""
 ~ saveSlotText = "&(location) &(cloakText)"
 
 
-$ muteApp
+
+// After selecting a choice, do not print its choice text again:
+$ hideChoiceText
+
 
 <h1>CLOAK OF SILENCE</h1>
 

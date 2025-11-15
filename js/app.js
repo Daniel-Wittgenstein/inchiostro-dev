@@ -474,10 +474,20 @@
   }
 
 
-  async function continueInk(signal) {
+  async function continueInk(signal, firstTime) {
+
+    let firstParagraphDone = false
+
     while(story.canContinue) {
-      
+
       const paragraphText = story.Continue()
+
+      if (!firstParagraphDone) {
+        firstParagraphDone = true
+        if (!firstTime && !store.get("showChoiceText")) {
+          continue
+        }
+      }
 
       if (paragraphText.trim().startsWith("$")) {
         // text is special command:
@@ -577,7 +587,7 @@
 
     traceFlow && console.log("process awaiting ink content", processTestId)
 
-    await continueInk(signal)
+    await continueInk(signal, firstTime)
     if (signal.aborted) {
       traceFlow && console.log("process", processTestId, "aborted")
       return //very important
@@ -850,6 +860,20 @@
       ["choicePause"],
       `pause = int0+`
     )
+    
+    
+    commandManager.addCommand(
+      "id_hideChoiceText",
+      ["hideChoiceText"],
+      `$none`
+    )
+    
+    
+    commandManager.addCommand(
+      "id_showChoiceText",
+      ["showChoiceText"],
+      `$none`
+    )
 
 
   }
@@ -859,8 +883,14 @@
   async function dispatchCommand(commandId, param, originalText) {
 
     // This is where the special commands actually do stuff:
+        
+    if (commandId === "id_hideChoiceText") {
+      store.set("showChoiceText", false)
+
+    } else if (commandId === "id_showChoiceText") {
+      store.set("showChoiceText", true)
     
-    if (commandId === "id_choicePause") {
+    } else if (commandId === "id_choicePause") {
       store.set("choicePause", param.pause)
 
     } else if (commandId === "id_elementPause") {
