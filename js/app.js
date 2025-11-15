@@ -15,6 +15,8 @@
     // will try to load the image even though it does not exist
     // in the asset map / the asset definitions.
 
+  const ALLOW_UNDEFINED_AUDIO = true // Same for audio.
+
   const AMBIENT_FADE_IN_TIME = 800 // milliseconds
   const AMBIENT_FADE_OUT_TIME = 800 // milliseconds
 
@@ -641,10 +643,15 @@
   }
 
 
-  function getImageByPathName(path, originalText = "") {
-    const allowUndefinedAssets = ALLOW_UNDEFINED_IMAGE
-    return getAssetByPathName(path, "image", originalText, allowUndefinedAssets)
+  function getImageByPathName(path, ctx, originalText = "") {
+    return getAssetByPathName(path, ctx, originalText, ALLOW_UNDEFINED_IMAGE)
   }
+
+
+  function getAudioByPathName(path, ctx, originalText = "") {
+    return getAssetByPathName(path, ctx, originalText, ALLOW_UNDEFINED_AUDIO)
+  }
+
 
   function getAssetByPathName(pathName, contextMsg = "", originalText = "",
     allowUndefinedAssets = false
@@ -924,7 +931,7 @@
 
       const assetName = param.name
 
-      const imageElement = getImageByPathName(pathPrefix + assetName, originalText)
+      const imageElement = getImageByPathName(pathPrefix + assetName, "image", originalText)
       
       if (!imageElement) {
         return
