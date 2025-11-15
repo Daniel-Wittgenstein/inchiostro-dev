@@ -618,9 +618,13 @@
     }
   }
 
-  function getAssetByPathName(pathName, contextMsg = "", originalText = "") {
+  function getAssetByPathName(pathName, contextMsg = "", originalText = "",
+    allowUndefinedAssets = false
+  ) {
 
-    if (!assetsWerePreloaded) {
+    if (!assetsWerePreloaded || (
+      allowUndefinedAssets && !storyAssets[pathName]
+    )) {
       const img = document.createElement("img")
       img.src = pathName
       return img
@@ -893,7 +897,7 @@
       const assetName = param.name
 
       const imageElement = getAssetByPathName(pathPrefix + assetName,
-        "image", originalText)
+        "image", originalText, allowUndefinedAssets)
       
       if (!imageElement) {
         return

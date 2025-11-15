@@ -12,7 +12,7 @@ Inchiostro (pronounced "ink-iostro") is a web template for [Ink](https://www.ink
 
 + Undo
 
-+ Preloads all assets at app start to prevent hickups. Shows loading bar.
++ Optionally preloads all assets at app start to prevent hiccups. Shows loading bar.
 
 + Allows you to display images and play audio.
 
@@ -182,11 +182,11 @@ And finally, the image command also has a "style" parameter, which shouldn't be 
 
 The "play" command plays a sound once:
 
-    $ play: name = assetName
+    $ play: bells.mp3
 
 You can also adjust the playback volume (from 0.0 = silent to 1.0 = full volume):
 
-    $ play: name = assetName; volume = 0.5
+    $ play: bells; volume = 0.5
 
 This is ideal for short sounds, like the creaking of a door opening.
 
@@ -196,11 +196,11 @@ Sets the current ambient sound.
 
 The ambient sound will play in the background, continuously looping, until it is stopped or another ambient sound is set. (There can only be one ambient sound playing at the same time.)
 
-    $ ambient: name = assetName
+    $ ambient rain.mp3
 
 When the ambient sound changes, the old sound will quickly fade out, then the new sound will quickly fade in (to give the player a more pleasing acoustic experience). If you really want to change the ambient sound immediately and abruptly with no fade effect at all, do:
 
-    $ ambient: name = thunders; abrupt = yes
+    $ ambient thunders.ogg; abrupt = yes
 
 Important: what happens if you set, say: "$ambient: rain" multiple times in a row? Inchiostro will recognize that "rain" is already the ambient sound that is playing and will just keep playing the sound. The ambient sound will NOT interrupt. This is pretty cool, because you do not have to track state and add if conditions. For example, if multiple knots in your story have ambient "rain", you can just paste "$ambient: name = rain" into all of them and be done with it.
 
@@ -307,6 +307,13 @@ Caveat 2: Inchiostro cannot save event handlers that are attached to DOM element
     You can change the UI texts in "./author/i18n.js"
 
 # Distributing your game
+
+## Assets Preloading
+
+Inchiostro can preload all your assets before the game starts. It will show a loading screen while doing so. This can help avoid stutters because of network delays.
+
+
++ Preload all assets from an asset map. This 
 
 ## Building an Asset Map
 
