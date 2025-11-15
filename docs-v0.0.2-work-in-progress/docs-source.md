@@ -82,6 +82,35 @@ You can just replace the contents of "story.js" with your own contents to use In
 
 Once you have created a new Inchiostro project, you can continue reading this guide.
 
+# Project Overview
+
+A new Inchiostro project contains a whole bunch of files, so here's a short overview:
+
+## Where you write your Ink
+
+**story.ink** file: Lives in the top-level directory and is your main Ink file. Change it and include other Ink files from here.
+
+## Where You Add Your Images and Sounds
+
+**assets** directory: This is where you put your images and sounds.
+
+**assets/example-game** directory: Assets for the example game. You can delete this directory.
+
+## Translation and Optional Customizations
+
+**author** directory: Contains some files with optional customizations. Translate your UI texts to another language than English here. Customize asset preloading.
+
+## Where You Change the Appearance of Your Game
+
+**css/author/style.css** directory: Contains some unimportant CSS. You can change this at will and add new stuff.
+
+## Other Stuff
+
+**css/inch** directory: Pre-defined important CSS for popups, the save slot dialog and a basic skeleton layout. Change it, if you know what you are doing.
+
+**js** directory: The engine code. Change it, if you know what you are doing.
+
+
 # Intro to Special Commands
 
 Inchiostro provides special commands that can be triggered from your Ink story.
@@ -222,7 +251,6 @@ And you can do it abruptly:
 Use "$debug commands" to show some debug text for all special commands:
 
     $ debug commands
-
 
 # Save Slots
 
