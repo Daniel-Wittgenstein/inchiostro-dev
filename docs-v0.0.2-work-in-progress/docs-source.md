@@ -310,16 +310,45 @@ Caveat 2: Inchiostro cannot save event handlers that are attached to DOM element
 
 ## Assets Preloading
 
-Inchiostro can preload all your assets before the game starts. It will show a loading screen while doing so. This can help avoid stutters because of network delays.
+Inchiostro can preload your assets before the game starts. It will show a loading screen while doing so. This can help avoid in-game stutters caused by network delays. (But the game starts slower and uses more memory.)
 
-
-+ Preload all assets from an asset map. This 
+There are two ways to do this: with an asset map or with an asset definitions file.
 
 ## Building an Asset Map
 
-If you are using Inkberry, in the top bar click "Build" -> "Build Asset Map". This will create a single file called "xAssetMapAuto.js" in your project folder. The file contains all of your game assets. You can distribute your game with this file INSTEAD OF your assets folder.
+If you are using Inkberry, in the top bar click "Build" -> "Build Asset Map". This will create a single file called "xAssetMapAuto.js" in your project folder. The file contains all of your game assets (base-64 encoded). You can distribute your game with this file INSTEAD OF your assets folder.
 
-The disadvantage is that the "xAssetMapAuto.js" file will be a bit bigger than your assets are by themselves. The advantage is that your game will play more nicely with browser when players run the game from a local file. If you are uploading your game to a server anyway, you shouldn't do this, it's just a trick for offline gaming, really. (You can also create two separate versions, one for uploading and one for local play.)
+The disadvantage is that the "xAssetMapAuto.js" file will be a bit bigger than your assets are by themselves.
+
+The advantage is that your game will (a.) preload assets and (b.) it will play a bit more nicely with browsers when players run the game from a local file.
+
+## Using an Asset Definition File
+
+Open "./author/assetDefinitions.js" in any text editor. Then add the names of your asset files, one for each line:
+
+    var $_assetDefinitions = `
+
+        items/shovel.jpg
+        items/flashlight.jpg
+
+        persons/adam.jpg
+        persons/eve.jpg
+
+        audio/birds.mp3
+
+    `
+
+The advantage of this is that your game will preload assets without increasing their size (unlike the asset map). The asset map works better for locally played games, though. 
+
+**Note**: the asset map takes precedence over the asset definition file, so if you want to use the asset definition file, delete your asset map.
+
+You can also use no asset map at all and leave the asset definitions empty, like this:
+
+    var $_assetDefinitions = `
+
+    `
+
+In that case, the assets will not be preloaded at all. This makes for a faster starting game.
 
 # Common Issues
 
