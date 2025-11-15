@@ -379,6 +379,9 @@
 
     function getData(assetId) {
       const asset = storyAssets[assetId]
+      if (!asset) {
+        return pathPrefix + assetId
+      }
       return asset.src
     }
 
