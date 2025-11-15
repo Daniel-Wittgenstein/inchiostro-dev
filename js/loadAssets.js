@@ -3,16 +3,35 @@ const pathPrefix = "assets/"
 
 var $_loadAssets = (assetListText, onProgress = () => {}, assetMap) => {
 
+  const LOGGING_ON = true
+
+  const log = (...p) => {
+    if (!LOGGING_ON) return
+    console.log(...p)
+  }
+
   const base64AssetHandling = $_base64AssetHandling
 
-  const lines = assetListText.trim().split('\n').map(n => n.trim()).filter(Boolean)
+  let filesToLoad
+
+  if (assetMap) {
+    filesToLoad = Object.keys(assetMap)
+  
+  } else if (assetListText) {
+    filesToLoad = pathPrefix + assetListText.trim().split('\n').map(n => n.trim()).filter(Boolean)
+
+  } else {
+    throw new Error(`Dev mistake.`)
+
+  }
+
   const assets = {}
   const promises = []
   let loadedCount = 0
 
   function updateProgress() {
     loadedCount++
-    onProgress(loadedCount / lines.length)
+    onProgress(loadedCount / filesToLoad.length)
   }
 
   const loaders = {
@@ -52,27 +71,23 @@ var $_loadAssets = (assetListText, onProgress = () => {}, assetMap) => {
 
   }
 
-  window.aaa = assetMap
-
-  for (const line of lines) {
-    const [id, path] = line.split(':').map(s => s.trim())
+  for (const path of filesToLoad) {
     const ext = path.split('.').pop().toLowerCase().trim()
-    const fullPath = pathPrefix + path
 
     let src, type
-    if (assetMap && assetMap[fullPath]) {
-      const entry = assetMap[fullPath]
+
+    if (assetMap && assetMap[path]) {
+      log(`${path}: load from asset map`)
+
+      const entry = assetMap[path]
       src = base64AssetHandling.base64ToDataUrl(entry)
       type = entry.type
+
     } else {
 
-      if (assetMap) {
-        console.warn(`asset map exists but does not include all specified assets. `+
-          `Trying to load ${id}: ${fullPath} from disk, instead.`
-        )
-      }
+      log(`${path}: load from path`)
 
-      src = fullPath
+      src = path
       if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext)) {
         type = 'image'
       } else if (['mp3', 'wav', 'ogg'].includes(ext)) {
@@ -84,7 +99,7 @@ var $_loadAssets = (assetListText, onProgress = () => {}, assetMap) => {
 
     if (type && loaders[type]) {
       const [asset, p] = loaders[type](src)
-      assets[id] = asset
+      assets[path] = asset
       promises.push(p)
     }
   }

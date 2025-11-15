@@ -1,6 +1,8 @@
 
 ;(function(storyContent) {
 
+  const pathPrefix = "assets/"
+
   const AMBIENT_FADE_IN_TIME = 800 // milliseconds
   const AMBIENT_FADE_OUT_TIME = 800 // milliseconds
 
@@ -860,13 +862,13 @@
 
       const assetName = param.name
 
-      const imageElement = assetMap[assetName]
+      const imageElement = assetMap[pathPrefix + assetName]
       if (!imageElement) {
-        const additionalMsg = assetName.includes(".") || assetName.includes("/") ? 
-          ` Use the asset name, not the full file name. ` +
-          `It shouldn't end with ".jpeg" or similar.`
-          : ""
-        authorError(`"${assetName}" is not a valid asset name.` + additionalMsg, originalText)
+        let addText = ""
+        if (assetMap) {
+          addText = `asset map: ${Object.keys(assetMap)}`
+        }
+        authorError(`"${assetName}" is not a valid asset name.` + addText, originalText)
         return
       }
       const clonedImage = imageElement.cloneNode()
@@ -980,10 +982,23 @@
   // ###########################
 
   async function startLoading() {
-    const assetText = window.$_assetDefinitions
 
-    if (!assetText && assetText !== "") {
-      throw new Error(`No assetDefinition?`)
+    const assetText = window.$_assetDefinitions || null
+
+    let xAssetMap = window._$_xAssetMap || null
+
+    if (xAssetMap) {
+      console.log("Asset map found.")
+    }
+    
+    if (assetText) {
+      console.log("Asset definitions found.")
+    }
+
+    if (!assetText && !xAssetMap) {
+      console.log("No asset map and no asset definitions found. " +
+        "Assets won't be preloaded.")
+      return
     }
 
     const loadingBar = document.getElementById("loading-bar")
@@ -994,19 +1009,11 @@
 
     let assets
 
-    let xAssetMap = window._$_xAssetMap || null
-
-    if (xAssetMap) {
-      console.log("Asset map found. Loading assets from there.")
-    } else {
-      console.log("No asset map found. Loading assets from disk.")
-    }
-
     try {
       assets = await loadAssets(assetText, updateBar, xAssetMap)
     } catch(err) {
       console.error("Failed to load assets:", err)
-      alert(`Could not load all assets. Fix "author/assetDefinitions.js" ` +
+      console.error(`Could not load all assets. Fix "author/assetDefinitions.js" ` +
         `Check console for details.`
       )
     }
