@@ -215,6 +215,16 @@ var commandProcessor = (function() {
     const invalidProp = Object.keys(paramData).find(key => !validProps.has(key)) || null
     
     if (invalidProp) {
+      if (invalidProp === MAGIC_AUTO_FIRST_PROP_NAME) {
+        // This means that the first parameter was passed without property
+        // name and then the first property name appeared later:
+        const prop = commandValidator[0].prop
+        return err(`You specified the property "${prop}" twice, `+
+          `once implicitly by writing it right after the command name and then later `+
+          `again with "${prop} = ..."`
+        )
+      }
+
       const validPropsText = commandValidator.map(entry => `"${entry.prop}"`).join(", ")
       return err(`${invalidProp}: is not a valid property for this command. ` +
         `The valid properties are: ${validPropsText}`
