@@ -20,6 +20,9 @@
   const AMBIENT_FADE_IN_TIME = 800 // milliseconds
   const AMBIENT_FADE_OUT_TIME = 800 // milliseconds
 
+  const DEFAULT_IMAGE_CSS_CLASS = "story-image"
+
+  const DEFAULT_TEXT_CSS_CLASS = "story-text"
 
   // ##################################################
   // ##################################################
@@ -515,6 +518,7 @@
 
         const paragraphElement = document.createElement('p')
         paragraphElement.innerHTML = paragraphText
+        paragraphElement.classList.add(DEFAULT_TEXT_CSS_CLASS)
         currentOutputContainer.appendChild(paragraphElement)
 
       }
@@ -540,7 +544,7 @@
       const choiceParagraphElement = document.createElement('p')
       choiceParagraphElement.classList.add('choice-outer')
       choiceParagraphElement.innerHTML = 
-        `<button class='choice' 
+        `<button class='choice'
         data-ink-index='${index}'>${choice.text}</button>`
       choiceContainer.appendChild(choiceParagraphElement)
     }
@@ -948,6 +952,8 @@
                                          // we use an empty string
       clonedImage.style = (param.style  || "").replaceAll("%%", ";")
       clonedImage.className = (param.class  || "").replaceAll(",", " ")
+      clonedImage.classList.add(DEFAULT_IMAGE_CSS_CLASS)
+
       clonedImage.dataset.inchAssetName = assetName
 
       currentOutputContainer.appendChild(clonedImage)

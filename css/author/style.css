@@ -7,9 +7,51 @@
 }
 
 
-img {
+.story-image {
+  /*
+    All images added via the $image command
+    automatically get this class.
+  */
+
   width: 100%;
   height: auto;
+
+  /* round edges: */
+  border-radius: 4px;
+
+  /* animation: */
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+
+}
+
+.story-text {
+  /*
+    Ink text automatically gets this class.
+  */
+
+  /* animation: */
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+
+}
+
+.choice-outer {
+  /* The <p>aragraph element the choice button is in. */
+
+  /* animation: */
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+
 }
 
 
+.choice {
+  /* The actual choice button. */
+
+}
+
+
+#main {
+
+}

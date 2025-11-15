@@ -1,4 +1,6 @@
 
+$ muteApp
+
 <h1>CLOAK OF SILENCE</h1>
 
 <h2>An Inchiostro Demo Game</h2>
