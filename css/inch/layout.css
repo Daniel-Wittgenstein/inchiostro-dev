@@ -18,6 +18,7 @@ body {
 #mid {
   flex: 1 1 auto;
   overflow: auto;
+  scrollbar-gutter: stable;
 }
 
 #main {
