@@ -256,6 +256,21 @@ Runs a single JS code line (via "eval"):
     $ js: alert("Ugly native popup!")
 
 
+## hideChoiceText
+
+After selecting a choice, Ink prints its text once more.
+
+Use the "hideChoiceText" command to suppress these texts:
+
+    $ hideChoiceText
+
+(Of course, this behavior can also be prevented by wrapping each choice text in your Ink story in square brackets, but that becomes a bit tedious after a while.)
+
+
+## showChoiceText
+
+Negate "hideChoiceText" and show these texts again.
+
 
 ## shuffleChoices
 
