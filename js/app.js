@@ -993,11 +993,9 @@
 
     else if (commandId === "id_play") {
       const volume = (param.volume === undefined) ? 1 : param.volume
-      const howlerSound = storyAssets[param.name]
-      if (!howlerSound) {
-        authorError(`"${param.name}" is not a valid asset name.`, originalText)
-        return
-      }
+      const path = param.name
+      const howlerSound = getAudioByPathName(path, "play", "")
+      if (!howlerSound) return
       howlerSound.volume(volume)
       howlerSound.play()
       return {
@@ -1006,22 +1004,19 @@
     }
 
     else if (commandId === "id_ambient") {
-      const assetName = param.name
-      const howlerSound = storyAssets[assetName]
-      if (!howlerSound) {
-        authorError(`"${assetName}" is not a valid asset name.`, originalText)
-        return
-      }
+      const path = param.name
+      const howlerSound = getAudioByPathName(path, "play", "")
+      if (!howlerSound) return
       let fadeIn = AMBIENT_FADE_IN_TIME
       let fadeOut = AMBIENT_FADE_OUT_TIME
       if (param.abrupt) {
         fadeIn = 0
         fadeOut = 0
       }
-      ambientManager.playAmbient(howlerSound, assetName, fadeIn, fadeOut)
+      ambientManager.playAmbient(howlerSound, path, fadeIn, fadeOut)
 
       return {
-        debugMsg: `Set ambient audio to: ${assetName}`,
+        debugMsg: `Set ambient audio to: ${path}`,
       }
     }
 
