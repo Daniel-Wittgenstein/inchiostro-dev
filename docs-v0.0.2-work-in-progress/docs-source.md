@@ -129,49 +129,16 @@ The space after the $ symbol is optional. The colon is optional, too. So, you ca
 
     $popup Welcome to Inchiostro!
 
-# GENERIC SPECIAL COMMANDS
 
-First, let's look at a couple of special commands that are very easy to understand.
-
-## popup
-
-Shows a simple pop-up window displaying some text.
-
-    $ popup: Amazing non-native popup!
-
-This is much better than using "alert" because browsers won't ask the player if they want to block alerts.
-
-## js
-
-Runs a single JS code line (via "eval"):
-
-    $ js: alert("Ugly native popup!")
-
-## maxUndo
-
-Sets the maximum undo limit.
-
-    $ maxUndo: 3
-
-Use 0 to disallow undo.
-
-IMPORTANT: Use this at the start of your Ink story (before the first choice) and do not change it afterwards!
-
-(Undo states are not saved to the localStorage, so you do not need to worry about localStorage limits here. That means if you save the game and reload it, the undo states are gone.)
-
-
-# ASSETS
-
-
-## ASSET COMMANDS
+# Images and Audio
 
 Inchiostro expects all your game assets (images and audio) to go into the "./assets" sub-directory of your project folder.
 
 There are several special commands for asset-related stuff. You put them directly into your Ink story.
 
-### image
+## image
 
-#### Displaying an image
+### Displaying an image
 
 The "image" command displays an image:
 
@@ -187,7 +154,7 @@ Shows the image "./assets/persons/eve.png"
 
 Always use forward slashes (/) for paths, NOT backward slashes (\\).
 
-#### Additional parameters for the image command
+### Additional parameters for the image command
 
 The image command also has optional parameters.
 
@@ -207,7 +174,7 @@ And finally, the image command also has a "style" parameter, which shouldn't be 
 
 (Note how inside "style", we have to separate the CSS properties with "%%".)
 
-### play
+## play
 
 The "play" command plays a sound once:
 
@@ -219,7 +186,7 @@ You can also adjust the playback volume (from 0.0 = silent to 1.0 = full volume)
 
 This is ideal for short sounds, like the creaking of a door opening.
 
-### ambient
+## ambient
 
 Sets the current ambient sound.
 
@@ -233,7 +200,7 @@ When the ambient sound changes, the old sound will quickly fade out, then the ne
 
 Important: what happens if you set, say: "$ambient: rain" multiple times in a row? Inchiostro will recognize that "rain" is already the ambient sound that is playing and will just keep playing the sound. The ambient sound will NOT interrupt. This is pretty cool, because you do not have to track state and add if conditions. For example, if multiple knots in your story have ambient "rain", you can just paste "$ambient: name = rain" into all of them and be done with it.
 
-### stopAmbient
+## stopAmbient
 
 This stops the current ambient sound.
 
@@ -244,13 +211,62 @@ And you can do it abruptly:
     $ stopAmbient: abrupt = yes
 
 
-# Debugging
+# Other Commands
 
-## debug commands
+## popup
+
+Shows a simple pop-up window displaying some text.
+
+    $ popup: Amazing non-native popup!
+
+This is much better than using "alert" because browsers won't ask the player if they want to block alerts.
+
+
+## maxUndo
+
+Sets the maximum undo limit.
+
+    $ maxUndo: 3
+
+Use 0 to disallow undo.
+
+IMPORTANT: Use this at the start of your Ink story (before the first choice) and do not change it afterwards!
+
+(Undo states are not saved to the localStorage, so you do not need to worry about localStorage limits here. That means if you save the game and reload it, the undo states are gone.)
+
+
+## muteApp
+
+Mutes audio entirely, also updating the speaker icon.
+
+  $ muteApp
+
+
+## unmuteApp
+
+Unmutes audio, also updating the speaker icon.
+
+  $ unmuteApp
+
+
+## js
+
+Runs a single JS code line (via "eval"):
+
+    $ js: alert("Ugly native popup!")
+
+
+
+# Commands for Debugging
+
+## Debug Commands
 
 Use "$debug commands" to show some debug text for all special commands:
 
     $ debug commands
+
+
+
 
 # Save Slots
 
