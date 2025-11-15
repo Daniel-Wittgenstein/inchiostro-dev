@@ -20,8 +20,9 @@
   const allowedDebugCommands = new Set(["commands"])
 
   let story, top, mid, bottom, commandManager, saveSlotManager,
-    restartStoryInitialState, currentOutputContainer, assetMap,
-    currentSaveMarker, currentTurnAbortController
+    restartStoryInitialState, currentOutputContainer, storyAssets,
+    currentSaveMarker, currentTurnAbortController, allAssetFileNamesForErrorDisplay,
+    xAssetMapExistsForErrorDisplay
   
   let undoStack = []
 
@@ -64,7 +65,7 @@
       }
     })
 
-    assetMap = assets
+    storyAssets = assets
 
     story = new inkjs.Story(storyContent)
 
@@ -160,7 +161,7 @@
     flushContainers()
     story.state.LoadJson(state.story)
     ambientManager.stopAmbient(0)
-    ambientManager.setState(state.ambientManager, assetMap)
+    ambientManager.setState(state.ambientManager, storyAssets)
     setDomState(state.domState)
     const contId = store.get("out", "main")
     setCurrentOutputContainer(contId)
@@ -349,7 +350,7 @@
   function deserializeContainer(htmlString) {
 
     function getData(assetId) {
-      const asset = assetMap[assetId]
+      const asset = storyAssets[assetId]
       return asset.src
     }
 
@@ -613,6 +614,24 @@
     }
   }
 
+  function getAssetByPathName(pathName, contextMsg = "", originalText = "") {
+    let val = storyAssets[pathName]
+    if (val) return val
+
+    let errText = `No asset with path "${pathName}" exists.`  
+
+    if (allAssetFileNamesForErrorDisplay) {
+      errText += 
+        `<br><br>Existing assets: 
+        ${xAssetMapExistsForErrorDisplay ? "(asset map)" : "(asset definitions)"}<br>` +
+        allAssetFileNamesForErrorDisplay.sort().map(n => "<br>" + n)
+    }
+
+    authorError(`${contextMsg}: ${errText}`, originalText)
+
+    return null
+  }
+
 
   // ###########################
   // ###########################
@@ -862,13 +881,10 @@
 
       const assetName = param.name
 
-      const imageElement = assetMap[pathPrefix + assetName]
+      const imageElement = getAssetByPathName(pathPrefix + assetName,
+        "image", originalText)
+      
       if (!imageElement) {
-        let addText = ""
-        if (assetMap) {
-          addText = `asset map: ${Object.keys(assetMap)}`
-        }
-        authorError(`"${assetName}" is not a valid asset name.` + addText, originalText)
         return
       }
       const clonedImage = imageElement.cloneNode()
@@ -928,7 +944,7 @@
 
     else if (commandId === "id_play") {
       const volume = (param.volume === undefined) ? 1 : param.volume
-      const howlerSound = assetMap[param.name]
+      const howlerSound = storyAssets[param.name]
       if (!howlerSound) {
         authorError(`"${param.name}" is not a valid asset name.`, originalText)
         return
@@ -942,7 +958,7 @@
 
     else if (commandId === "id_ambient") {
       const assetName = param.name
-      const howlerSound = assetMap[assetName]
+      const howlerSound = storyAssets[assetName]
       if (!howlerSound) {
         authorError(`"${assetName}" is not a valid asset name.`, originalText)
         return
@@ -987,13 +1003,24 @@
 
     let xAssetMap = window._$_xAssetMap || null
 
+    let alternativeEntries = null
+
     if (xAssetMap) {
       console.log("Asset map found.")
+      xAssetMapExistsForErrorDisplay = true
     }
     
     if (assetText) {
-      console.log("Asset definitions found.")
+      if (xAssetMap) {
+        console.log("Asset definitions found, but ignored because asset map takes precedence.")
+      } else {
+        console.log("Asset definitions found.")
+        alternativeEntries = assetText.trim().split('\n')
+          .map(n => pathPrefix + n.trim()).filter(Boolean)
+      }
     }
+
+    allAssetFileNamesForErrorDisplay = xAssetMap ? Object.keys(xAssetMap) : alternativeEntries
 
     if (!assetText && !xAssetMap) {
       console.log("No asset map and no asset definitions found. " +
@@ -1010,7 +1037,8 @@
     let assets
 
     try {
-      assets = await loadAssets(assetText, updateBar, xAssetMap)
+      assets = await loadAssets(updateBar, xAssetMap, alternativeEntries)
+
     } catch(err) {
       console.error("Failed to load assets:", err)
       console.error(`Could not load all assets. Fix "author/assetDefinitions.js" ` +

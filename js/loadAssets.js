@@ -1,7 +1,7 @@
 
 const pathPrefix = "assets/"
 
-var $_loadAssets = (assetListText, onProgress = () => {}, assetMap) => {
+var $_loadAssets = (onProgress = () => {}, assetMap, alternativeEntries) => {
 
   const LOGGING_ON = true
 
@@ -18,7 +18,7 @@ var $_loadAssets = (assetListText, onProgress = () => {}, assetMap) => {
     filesToLoad = Object.keys(assetMap)
   
   } else if (assetListText) {
-    filesToLoad = pathPrefix + assetListText.trim().split('\n').map(n => n.trim()).filter(Boolean)
+    filesToLoad = alternativeEntries
 
   } else {
     throw new Error(`Dev mistake.`)
