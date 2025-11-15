@@ -262,17 +262,8 @@ var commandProcessor = (function() {
         }
 
         // if it's not the first parameter and does not include "=",
-        // then treat it as a truthy flag:
+        return err(`${part}: Expected "property = value"`)
 
-        if (/\s/.test(str)) {
-          return err(`${part}: Expected either "property = value" or a single word property.`)
-        }
-        let prop = part
-        prop = normalizeParamProp(prop)
-        if (paramData[prop]) {
-          return err(`Property "${prop}" is defined twice.`)
-        }
-        paramData[prop] = true
       }
     }
     return paramData
