@@ -392,11 +392,6 @@
   }
 
 
-  function closeHamburgerMenu() {
-
-  }
-
-
   function serializeContainer(container) {
     const clone = container.cloneNode(true)
 
