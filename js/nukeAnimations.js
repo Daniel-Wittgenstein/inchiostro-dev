@@ -13,17 +13,11 @@ var $_nukeAnimations = (function() {
       }
     `
     document.head.appendChild(style)
-
-    document.querySelectorAll('.' + GENERIC_ELEMENT_CLASS)
-      .forEach(el => el.classList.add('_no-anim-fixed'))
   }
 
   function unnuke() {
     const style = document.getElementById("no-animations")
     if (style) style.remove()
-
-    document.querySelectorAll('.' + GENERIC_ELEMENT_CLASS)
-      .forEach(el => el.classList.remove('_no-anim-fixed'))
   }
 
   return {

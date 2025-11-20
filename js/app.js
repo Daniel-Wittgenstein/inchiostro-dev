@@ -204,6 +204,12 @@
     refreshUndoIcon()
     restoreSeed()
 
+    if (settings.get("animationsOn")) {
+      nukeAnimations.unnuke()
+    } else {
+      nukeAnimations.nuke()
+    }
+
     // and finally:
     takeTurn(false)
   }
@@ -308,6 +314,11 @@
       }
       const val = state.serializedContainers[id]
       el.innerHTML = deserializeContainer(val)
+    }
+    if (settings.get("animationOn")) {
+      nukeAnimations.unnuke()
+    } else {
+      nukeAnimations.nuke()
     }
   }
 
@@ -591,9 +602,6 @@
 
   function addGenericClasses(domElement) {
     domElement.classList.add(GENERIC_ELEMENT_CLASS)
-    if (!settings.get("animationsOn")) {
-      domElement.classList.add('_no-anim-fixed')
-    }
   }
 
   async function createChoices(signal) {
