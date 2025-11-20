@@ -1,4 +1,12 @@
 
+._no-anim-fixed {
+  /* Important: gets applied to existing output elements
+  (text, images, choices ...) when
+  the user turns off animations.
+  */
+  opacity: 1 !important;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

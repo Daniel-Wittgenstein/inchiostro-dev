@@ -21,7 +21,6 @@
   const AMBIENT_FADE_OUT_TIME = 800 // milliseconds
 
   const DEFAULT_IMAGE_CSS_CLASS = "story-image"
-
   const DEFAULT_TEXT_CSS_CLASS = "story-text"
 
   // ##################################################
@@ -36,13 +35,15 @@
   const ambientManager = window.$_ambientManager
   ambientManager.setCallbacks(getAudioByPathName)
 
-  const store = window.$_store
-  const genericWindow = window.$_genericWindow
-  const SaveSlotManager = window.$_SaveSlotManager
+  const store = $_store
+  const genericWindow = $_genericWindow
+  const SaveSlotManager = $_SaveSlotManager
   const i18n = $_i18n
   const settings = $_settings
   const random = $_random
   const SwitchButton = $_switchButton
+  const nukeAnimations = $_nukeAnimations
+  const GENERIC_ELEMENT_CLASS = $_GENERIC_ELEMENT_CLASS
 
   const MAGICAL_CHOICE_CONTAINER_STRING = "no-conflict-choice-containerX073223218"
 
@@ -53,7 +54,7 @@
   let story, top, mid, bottom, commandManager, saveSlotManager,
     restartStoryInitialState, currentOutputContainer, storyAssets,
     currentSaveMarker, currentTurnAbortController, allAssetFileNamesForErrorDisplay,
-    xAssetMapExistsForErrorDisplay, assetsWerePreloaded
+    xAssetMapExistsForErrorDisplay, assetsWerePreloaded, hamburgerMenuContainer
   
   let undoStack = []
 
@@ -365,6 +366,7 @@
     )
 
 
+    createHamburgerMenu()
 
     document.getElementById("hamburger-button").title = i18n.hamburgerButtonTitle
 
@@ -379,16 +381,34 @@
   }
 
 
-  function openHamburgerMenu() {
+  function createHamburgerMenu() {
     const contentDiv = document.createElement('div')
+    
+    // Create an observer before creating its related button.
+    // If a button just toggles a property of settings, we do not need
+    // an observer. The observer is for when we need to do
+    // additional side-effects.
 
-    const switchButton = new SwitchButton(contentDiv, [
+    settings.createObserver("animationsOn", (value) => {
+      if (value) {
+        nukeAnimations.unnuke()
+      } else {
+        nukeAnimations.nuke()
+      }
+    })
+
+    new SwitchButton(contentDiv, [
       {text: "Animations: on", value: true},
       {text: "Animations: off", value: false},
     ], "animationsOn", "")
-    
+
+    hamburgerMenuContainer = contentDiv
+  }
+
+
+  function openHamburgerMenu() {
     const {mainArea} = genericWindow.newWindow("", [], {})
-    mainArea.appendChild(contentDiv)
+    mainArea.appendChild(hamburgerMenuContainer)
   }
 
 
@@ -555,6 +575,7 @@
         const paragraphElement = document.createElement('p')
         paragraphElement.innerHTML = paragraphText
         paragraphElement.classList.add(DEFAULT_TEXT_CSS_CLASS)
+        addGenericClasses(paragraphElement)
         currentOutputContainer.appendChild(paragraphElement)
 
       }
@@ -562,6 +583,12 @@
     }
   }
 
+  function addGenericClasses(domElement) {
+    domElement.classList.add(GENERIC_ELEMENT_CLASS)
+    if (!settings.get("animationsOn")) {
+      domElement.classList.add('_no-anim-fixed')
+    }
+  }
 
   async function createChoices(signal) {
     const choicesList = getShuffledChoicesList(
@@ -579,6 +606,7 @@
       if (signal.aborted) return
       const choiceParagraphElement = document.createElement('p')
       choiceParagraphElement.classList.add('choice-outer')
+      addGenericClasses(choiceParagraphElement)
       choiceParagraphElement.innerHTML = 
         `<button class='choice'
         data-ink-index='${index}'>${choice.text}</button>`
@@ -1009,6 +1037,7 @@
       clonedImage.style = (param.style  || "").replaceAll("%%", ";")
       clonedImage.className = (param.class  || "").replaceAll(",", " ")
       clonedImage.classList.add(DEFAULT_IMAGE_CSS_CLASS)
+      addGenericClasses(clonedImage)
 
       clonedImage.dataset.inchAssetName = assetName
 

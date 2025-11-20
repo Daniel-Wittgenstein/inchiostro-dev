@@ -8,6 +8,8 @@ var $_settings = (function() {
 
   const SAVE_STRING = "$___settings"
 
+  let observers = {}
+
   let state = {
     muted: false,
     animationsOn: true,
@@ -16,6 +18,10 @@ var $_settings = (function() {
 
   function set(key, value) {
     state[key] = value
+    console.log("ma scusa", key, value, observers)
+    if (observers[key]) {
+      observers[key].onChange(value, key)
+    }
     saveState()
   }
 
@@ -45,10 +51,18 @@ var $_settings = (function() {
   }
 
 
+  function createObserver(watchedVar, onChange) {
+    observers[watchedVar] = {
+      onChange,
+    }
+  }
+
+
   return {
     set,
     get,
     loadState,
+    createObserver,
   }
 
 })()
