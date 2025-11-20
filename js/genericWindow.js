@@ -1,6 +1,8 @@
 
 var $_genericWindow = (function() {
   
+  const settings = $_settings
+
   let options = {
     closeButtonAlignment: 'right'
   }
@@ -16,6 +18,12 @@ var $_genericWindow = (function() {
     targetOverlay.classList.remove('gwin-fade-in')
     targetOverlay.classList.add('gwin-fade-out')
 
+    let closeTime = 300
+
+    if (settings && !settings.get("animationsOn")) {
+      closeTime = 0
+    }
+
     setTimeout(() => {
       try {
         document.body.removeChild(targetOverlay)
@@ -26,7 +34,7 @@ var $_genericWindow = (function() {
         // the try/catch and click on the close button of the window,
         // then quickly press ESCAPE.
       }
-    }, 300)
+    }, closeTime)
   }
 
   function init() {
