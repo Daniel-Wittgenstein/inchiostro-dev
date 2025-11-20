@@ -131,6 +131,8 @@ The space after the $ symbol is optional. The colon is optional, too. So, you ca
 
 # Images and Audio
 
+Note for people NOT using Inkberry: if you are not using Inkberry and your images do not show up or the audio is not playing, that is probably expected browser behavior. Open your browser console (typically with F12 or CTRL + Shift + i). If you see an error like "Cross-Origin Request Blocked" or similar, the browser blocked the resource because of security reasons. Fixes: run a local server or use Inkberry.
+
 Inchiostro expects all your game assets (images and audio) to go into the "./assets" sub-directory of your project folder.
 
 There are several special commands for asset-related stuff. You put them directly into your Ink story.
