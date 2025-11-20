@@ -501,6 +501,9 @@
   
   async function elementPause() {
     const delay = store.get("elementPause")
+    if (!settings.get("animationsOn")) {
+      return
+    }
     if (delay) {
       await sleep(delay)
     }
@@ -509,6 +512,9 @@
 
   async function choicePause() {
     const delay = store.get("choicePause")
+    if (!settings.get("animationsOn")) {
+      return
+    }
     if (delay) {
       await sleep(delay)
     }

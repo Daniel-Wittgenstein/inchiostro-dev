@@ -18,7 +18,6 @@ var $_settings = (function() {
 
   function set(key, value) {
     state[key] = value
-    console.log("ma scusa", key, value, observers)
     if (observers[key]) {
       observers[key].onChange(value, key)
     }
