@@ -1,4 +1,9 @@
 
+body.no-anim * {
+  animation: none !important;
+  transition: none !important;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

@@ -204,12 +204,6 @@
     refreshUndoIcon()
     restoreSeed()
 
-    if (settings.get("animationsOn")) {
-      nukeAnimations.unnuke()
-    } else {
-      nukeAnimations.nuke()
-    }
-
     // and finally:
     takeTurn(false)
   }
