@@ -105,6 +105,7 @@ var $_genericWindow = (function() {
 
     return {
       window: windowEl,
+      mainArea,
       overlay,
       closeThisWindow,
     }

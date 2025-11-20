@@ -379,7 +379,11 @@
 
 
   function openHamburgerMenu() {
+    const contentDiv = document.createElement('div')
 
+    contentDiv.innerHTML = "menu"
+    const {mainArea} = genericWindow.newWindow("", [], {})
+    mainArea.appendChild(contentDiv)
   }
 
 
