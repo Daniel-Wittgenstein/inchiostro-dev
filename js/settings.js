@@ -10,6 +10,7 @@ var $_settings = (function() {
 
   let state = {
     muted: false,
+    animationsOn: true,
   }
 
 

@@ -42,6 +42,7 @@
   const i18n = $_i18n
   const settings = $_settings
   const random = $_random
+  const SwitchButton = $_switchButton
 
   const MAGICAL_CHOICE_CONTAINER_STRING = "no-conflict-choice-containerX073223218"
 
@@ -381,7 +382,11 @@
   function openHamburgerMenu() {
     const contentDiv = document.createElement('div')
 
-    contentDiv.innerHTML = "menu"
+    const switchButton = new SwitchButton(contentDiv, [
+      {text: "Animations: on", value: true},
+      {text: "Animations: off", value: false},
+    ], "animationsOn", "")
+    
     const {mainArea} = genericWindow.newWindow("", [], {})
     mainArea.appendChild(contentDiv)
   }
